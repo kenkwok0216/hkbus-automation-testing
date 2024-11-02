@@ -58,4 +58,8 @@ public class SeleniumTests {
 		driver.get("https://www.google.com.hk");
 		driver.close();
 	}
+
+	public void testing(){
+		
+	}
 }
