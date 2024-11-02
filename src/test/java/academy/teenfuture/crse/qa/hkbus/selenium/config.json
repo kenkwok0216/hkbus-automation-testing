@@ -1,0 +1,24 @@
+{
+    "driver": {
+        "windows_x86": {
+            "chrome": "\\src\\main\\resources\\driver\\ChromeDriver\\chromedriver.exe",
+            "firefox": "\\src\\main\\resources\\Driver\\FirefoxDriver\\geckodriver.exe",
+            "edge": "\\src\\main\\resources\\driver\\EdgeDriver\\chromedriver.exe"
+        },
+        "mac_arm64": {
+            "chrome": "/chromedrive/src/main/resources/Driver/ChromeDriver/mac-arm64/chromedriverr",
+            "firefox": "/src/main/resources/Driver/FirefoxDriver/mac-arm64/geckodriver"
+        }
+    },
+    "browser": {
+        "windows_x86": {
+            "chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "firefox": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+            "edge": "\\src\\main\\resources\\driver\\EdgeDriver\\chromedriver.exe"
+        },
+        "mac_arm64": {
+            "chrome": "/chromedrive/src/main/resources/Driver/ChromeDriver/mac-arm64/chromedriverr",
+            "firefox": "/src/main/resources/Driver/FirefoxDriver/mac-arm64/geckodriver"
+        }
+    }
+}
