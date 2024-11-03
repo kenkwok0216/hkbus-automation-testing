@@ -2,101 +2,73 @@ package academy.teenfuture.crse.qa.hkbus.selenium;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.json.JSONException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.safari.SafariDriver;
 
 import academy.teenfuture.crse.qa.hkbus.selenium.util.JSONConfigParser;
 
+/**
+ * This is the superclass of other test classes, it can load 
+ * the drivers and the browsers from the config.json file. 
+ * 
+ * @author Franck Cheng
+ */
 public class BaseTest {
 
+    // Store the browser name and map it to System.setProperty() key
+    private static final Map<String, String> propertyMap = new HashMap<>();
+
     protected WebDriver driver;
-    protected ChromeOptions chromeOptions;
-    protected FirefoxOptions firefoxOptions;
 
-    @BeforeEach
-    public void start() {
-        //driver = configureBrowser("chrome");
-    }
-
-    @AfterEach
-    public void end() {
-        driver.quit();
+    static {
+        propertyMap.put("Chrome", "webdriver.chrome.driver");
+        propertyMap.put("Firefox", "webdriver.gecko.driver");
+        propertyMap.put("Edge", "webdriver.edgeDriver.driver");
     }
 
     /**
+     * This method will load the paths from config.json file base on browser name and provide a WebDriver
      * 
-     * @param browserName "Chrome", "Firefox", "Edge", "Safari"
-     * @return
-     * @throws JSONException
+     * @param browserName Browser name in Pascal case, e.g. "Chrome", "Firefox", "Edge", "Safari"
+     * @return Instance of corresponding WebDriver
      */
     protected WebDriver configureBrowser(String browserName) {
         // Configure WebDriver based on browserName
         String osName = null;
-        String driverReletivePath = null;
+        String platformName = null;
+        String driverRelativePath = null;
         String driverPath = null;
         String browserPath = null;
 
         osName = System.getProperty("os.name").toLowerCase();
 
-        // Convert osName
-        if (osName.contains("win")) {
-            osName = "windows_x86";
-        } else if (osName.contains("mac")) {
-            osName = "mac_aarch64";
+        // Convert osName to match the platform name in the config.json file
+        if (osName.startsWith("win")) {
+            platformName = "windows_x64";
+        } else if (osName.startsWith("mac")) {
+            platformName = "macos_aarch64";
         } else {
             // Handle other OSes or default path
 
         }
 
         // Get driver path from config.json file
-        driverReletivePath = JSONConfigParser.getDriverPath(osName, browserName.toLowerCase());
-        driverPath = System.getProperty("user.dir") + driverReletivePath;
-        browserPath = JSONConfigParser.getBrowserPath(osName, browserName.toLowerCase());
+        driverRelativePath = JSONConfigParser.getDriverPath(platformName, browserName.toLowerCase());
+        driverPath = System.getProperty("user.dir") + driverRelativePath;
+        browserPath = JSONConfigParser.getBrowserPath(platformName, browserName.toLowerCase());
         
-		if (osName.contains("win")) {
-            // Windows settings
-			// Chrome (Win-x86)
-			System.setProperty("webdriver.chrome.driver", driverPath);
+        // If the driver path exists in the config file, then setProperty
+        if (driverRelativePath != null) {
+            System.setProperty(propertyMap.get(browserName), driverPath);
+        }
 
-			// Firefox (Win-x86)
-			System.setProperty("webdriver.gecko.driver", driverPath);
-
-			// Edge (Win-x86)
-			System.setProperty("webdriver.edgeDriver.driver", driverPath);
-
-            // Finally
+        // If the browser path exists in the config file, set specific location, otherwise use default
+        if (browserPath != null) {
             this.driver = createWebDriver(browserName, browserPath);
-
-        } else if (osName.contains("mac")) {
-            // MacOS settings
-			// Chrome (MacOS-arm64)
-            System.setProperty("webdriver.chrome.driver", driverPath);
-
-
-			// Firefox (MacOS-arm64)
-			System.setProperty("webdriver.gecko.driver", driverPath);
-
-
-			// Edge (MacOS-arm64)
-
-
-			// Safari (MacOS-arm64)
-
-            // Finally
-            this.driver = createWebDriver(browserName);
         } else {
-            // Handle other OSes or default path
-            this.driver = null;
+            this.driver = createWebDriver(browserName);
         }
         
         return this.driver;
@@ -104,8 +76,9 @@ public class BaseTest {
 
     /**
      * Use reflection to create WebDriver instance
+     * 
      * @param browserName Browser name in Pascal case, e.g. "Chrome", "Firefox", "Edge", "Safari"
-     * @return instance of corresponding WebDriver
+     * @return Instance of corresponding WebDriver
      */
     private WebDriver createWebDriver(String browserName) {
         WebDriver driver = null;
@@ -118,7 +91,14 @@ public class BaseTest {
         }
         return driver;
     }
-
+    
+    /**
+     * Use reflection to create WebDriver instance from specified browser location
+     * 
+     * @param browserName Browser name in Pascal case, e.g. "Chrome", "Firefox", "Edge", "Safari"
+     * @param browserPath Absolute path of browser executable
+     * @return Instance of corresponding WebDriver
+     */
     private WebDriver createWebDriver(String browserName, String browserPath) {
         WebDriver driver = null;
         try {
