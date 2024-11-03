@@ -44,7 +44,6 @@ public class BaseTest {
         String osName = null;
         String driverReletivePath = null;
         String driverPath = null;
-        String browserReletivePath = null;
         String browserPath = null;
 
         osName = System.getProperty("os.name").toLowerCase();
@@ -61,15 +60,9 @@ public class BaseTest {
 
         // Get driver path from config.json file
         driverReletivePath = JSONConfigParser.getDriverPath(osName, browserName.toLowerCase());
-        browserReletivePath = JSONConfigParser.getBrowserPath(osName, browserName.toLowerCase());
-
-        if(browserReletivePath != null) {
-
-        }
-        
         driverPath = System.getProperty("user.dir") + driverReletivePath;
-        browserPath = System.getProperty("user.dir") + browserReletivePath;
-
+        browserPath = JSONConfigParser.getBrowserPath(osName, browserName.toLowerCase());
+        
 		if (osName.contains("win")) {
             // Windows settings
 			// Chrome (Win-x86)
@@ -83,7 +76,7 @@ public class BaseTest {
 
             // Finally
             this.driver = createWebDriver(browserName, browserPath);
-            
+
         } else if (osName.contains("mac")) {
             // MacOS settings
 			// Chrome (MacOS-arm64)
@@ -111,7 +104,7 @@ public class BaseTest {
 
     /**
      * Use reflection to create WebDriver instance
-     * @param browserName Browser name in title case, e.g. "Chrome", "Firefox", "Edge", "Safari"
+     * @param browserName Browser name in Pascal case, e.g. "Chrome", "Firefox", "Edge", "Safari"
      * @return instance of corresponding WebDriver
      */
     private WebDriver createWebDriver(String browserName) {
