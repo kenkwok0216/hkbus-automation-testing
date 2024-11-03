@@ -1,9 +1,6 @@
 package academy.teenfuture.crse.qa.hkbus.selenium;
 
-import org.json.JSONException;
-import org.junit.Test;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.safari.SafariDriver;
+import org.junit.jupiter.api.Test;
 
 public class DummyTest extends BaseTest {
 
