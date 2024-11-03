@@ -5,8 +5,8 @@
             "firefox": "\\src\\main\\resources\\Driver\\FirefoxDriver\\geckodriver.exe",
             "edge": "\\src\\main\\resources\\driver\\EdgeDriver\\chromedriver.exe"
         },
-        "mac_arm64": {
-            "chrome": "/chromedrive/src/main/resources/Driver/ChromeDriver/mac-arm64/chromedriverr",
+        "mac_aarch64": {
+            "chrome": "/src/main/resources/Driver/ChromeDriver/mac-arm64/chromedriver",
             "firefox": "/src/main/resources/Driver/FirefoxDriver/mac-arm64/geckodriver"
         }
     },
@@ -15,10 +15,6 @@
             "chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
             "firefox": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
             "edge": "\\src\\main\\resources\\driver\\EdgeDriver\\chromedriver.exe"
-        },
-        "mac_arm64": {
-            "chrome": "/chromedrive/src/main/resources/Driver/ChromeDriver/mac-arm64/chromedriverr",
-            "firefox": "/src/main/resources/Driver/FirefoxDriver/mac-arm64/geckodriver"
         }
     }
 }

@@ -1,7 +1,7 @@
 package academy.teenfuture.crse.qa.hkbus.selenium.util;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -17,12 +17,12 @@ import java.io.IOException;
  */
 public class JSONConfigParser {
 
-    private static final String CONFIG_FILE_PATH = "config.json";
+    private static final String CONFIG_FILE_PATH = "/src/test/java/academy/teenfuture/crse/qa/hkbus/selenium/config.json";
 
-    private static String getConfigPath(String configTypeName, String osName, String browserName) throws JSONException {
+    private static String getConfigPath(String configTypeName, String osName, String browserName) {
         try {
             JSONParser parser = new JSONParser();
-            JSONObject config = (JSONObject) parser.parse(new FileReader(CONFIG_FILE_PATH));
+            JSONObject config = (JSONObject) parser.parse(new FileReader(System.getProperty("user.dir") + CONFIG_FILE_PATH));
 
             JSONObject driverConfig = (JSONObject) config.get(configTypeName);
             JSONObject osConfig =  (JSONObject) driverConfig.get(osName);
@@ -39,11 +39,11 @@ public class JSONConfigParser {
         return null;
     }
 
-    public static String getDriverPath(String osName, String browserName) throws JSONException {
+    public static String getDriverPath(String osName, String browserName) {
         return getConfigPath("driver", osName, browserName);
     }
 
-    public static String getBrowserPath(String osName, String browserName) throws JSONException {
+    public static String getBrowserPath(String osName, String browserName) {
         return getConfigPath("browser", osName, browserName);
     }
 }
