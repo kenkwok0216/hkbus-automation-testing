@@ -1,5 +1,6 @@
 package academy.teenfuture.crse.qa.hkbus.selenium;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -64,8 +65,8 @@ public class BaseTest {
             System.setProperty(propertyMap.get(browserName), driverPath);
         }
 
-        // If the browser path exists in the config file, set specific location, otherwise use default
-        if (browserPath != null) {
+        // If the browser path exists in the config file, and the file exists, set specific location, otherwise use default
+        if (browserPath != null && new File(browserPath).exists()) {
             this.driver = createWebDriver(browserName, browserPath);
         } else {
             this.driver = createWebDriver(browserName);

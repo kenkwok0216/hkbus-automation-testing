@@ -11,13 +11,12 @@ public class DummyTest extends BaseTest {
 
     @BeforeEach
     public void start() {
-        //driver = super.configureBrowser("Chrome");
-        configureBrowser("Firefox");
+        super.configureBrowser("Firefox").get("https://www.google.com.hk");
     }
 
     @Test
     public void simpleDummyTest() {
-        driver.get("https://www.google.com.hk");
+
     }
 
     @AfterEach
