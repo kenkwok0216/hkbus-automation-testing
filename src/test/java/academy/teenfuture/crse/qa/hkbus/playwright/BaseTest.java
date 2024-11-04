@@ -258,17 +258,15 @@ public class BaseTest {
 		}
 
 		test = extent.createTest(testName);
+		
 		if (isSuccess) {
 			test.pass(message);
 		} else {
-			test.fail(MarkupHelper.createLabel(message, ExtentColor.RED));
+			String base64Image = Base64.getEncoder().encodeToString(screenshot);
+			test.fail(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
 		}
-
-		// Attach the screenshot to the report if provided
-		if (screenshot != null && screenshot.length > 0) {
-			String base64Image = Base64.getEncoder().encodeToString(screenshot); // Convert to Base64 string
-			test.fail("Test result Image", MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
-		}
+		
+		
 	}
 
 	/**
