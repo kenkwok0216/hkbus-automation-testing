@@ -53,3 +53,4 @@ public class DummyTest extends BaseTest {
 	public static void endAll() {
 		endAllTest();
 	}
+}
