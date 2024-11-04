@@ -92,9 +92,8 @@ public class BaseTest {
 	protected static BrowserType browserType;
 	protected static Page page;
 	protected static BrowserContext browserContext;
-	protected static boolean isVideoRecording; // Track if video recording is enabled
 
-	private static ExtentReports extent;
+	private ExtentReports extent;
 	private ExtentTest test;
 
 	/**
@@ -118,8 +117,6 @@ public class BaseTest {
 	 * @throws IllegalArgumentException if an unsupported browser is specified.
 	 */
 	public Page configure(String browserName, boolean isVideo) {
-		isVideoRecording = isVideo;
-
 		if (playwright == null) {
 			playwright = Playwright.create();
 		}
@@ -204,7 +201,6 @@ public class BaseTest {
 				} else {
 					System.err.println("Failed to rename video file.");
 				}
-
 			}
 		}));
 	}
@@ -262,53 +258,46 @@ public class BaseTest {
 		}
 
 		test = extent.createTest(testName);
-
 		if (isSuccess) {
 			test.pass(message);
 		} else {
-			String base64Image = Base64.getEncoder().encodeToString(screenshot);
-			test.fail(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
+			test.fail(MarkupHelper.createLabel(message, ExtentColor.RED));
 		}
 
+		// Attach the screenshot to the report if provided
+		if (screenshot != null && screenshot.length > 0) {
+			String base64Image = Base64.getEncoder().encodeToString(screenshot); // Convert to Base64 string
+			test.fail("Test result Image", MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
+		}
 	}
 
 	/**
 	 * Flushes the ExtentReports instance, writing all report data to the output
 	 * file.
 	 */
-	public static void flushExtentReports() {
+	public void flushExtentReports() {
 		if (extent != null) {
 			extent.flush();
 		}
 	}
 
 	/**
-	 * Ends the test execution by cleaning up resources.
+	 * Ends the test execution by flushing reports and cleaning up resources.
 	 */
-	public void endEachTest() {
-		// Cleanup resources only if video recording is not enabled
-		if (!isVideoRecording) {
-			if (page != null) {
-				page.close();
-				page = null; // Set to null to avoid reuse
-			}
-			if (browserContext != null) {
-				browserContext.close();
-				browserContext = null; // Set to null to avoid reuse
-			}
-			if (playwright != null) {
-				playwright.close();
-				playwright = null; // Set to null to avoid reuse
-			}
-		}
-	}
-
-	/**
-	 * Ends the test execution by flushing reports.
-	 */
-	public static void endAllTest() {
+	public void endTest() {
 		// Flush reports and clean up
 		flushExtentReports();
-
+		if (page != null) {
+			page.close();
+			page = null; // Set to null to avoid reuse
+		}
+		if (browserContext != null) {
+			browserContext.close();
+			browserContext = null; // Set to null to avoid reuse
+		}
+		if (playwright != null) {
+			playwright.close();
+			playwright = null; // Set to null to avoid reuse
+		}
 	}
 }

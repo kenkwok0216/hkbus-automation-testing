@@ -2,10 +2,8 @@ package academy.teenfuture.crse.qa.hkbus.playwright;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.microsoft.playwright.Locator;
@@ -13,7 +11,6 @@ import com.microsoft.playwright.Locator;
 /**
  * Template test class
  */
-@Disabled
 public class DummyTest extends BaseTest {
 
 	@BeforeEach
@@ -45,12 +42,8 @@ public class DummyTest extends BaseTest {
 	}
 
 	@AfterEach
-	public void endEach() {
-		endEachTest();
+	public void end() {
+		endTest();
 	}
 
-	@AfterAll
-	public static void endAll() {
-		endAllTest();
-	}
 }
