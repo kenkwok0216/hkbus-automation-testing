@@ -93,7 +93,7 @@ public class BaseTest {
 	protected static Page page;
 	protected static BrowserContext browserContext;
 
-	private ExtentReports extent;
+	private static ExtentReports extent;
 	private ExtentTest test;
 
 	/**
@@ -258,33 +258,31 @@ public class BaseTest {
 		}
 
 		test = extent.createTest(testName);
-		
+
 		if (isSuccess) {
 			test.pass(message);
 		} else {
 			String base64Image = Base64.getEncoder().encodeToString(screenshot);
 			test.fail(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
 		}
-		
-		
+
 	}
 
 	/**
 	 * Flushes the ExtentReports instance, writing all report data to the output
 	 * file.
 	 */
-	public void flushExtentReports() {
+	public static void flushExtentReports() {
 		if (extent != null) {
 			extent.flush();
 		}
 	}
 
 	/**
-	 * Ends the test execution by flushing reports and cleaning up resources.
+	 * Ends the test execution by cleaning up resources.
 	 */
-	public void endTest() {
+	public void endEachTest() {
 		// Flush reports and clean up
-		flushExtentReports();
 		if (page != null) {
 			page.close();
 			page = null; // Set to null to avoid reuse
@@ -297,5 +295,14 @@ public class BaseTest {
 			playwright.close();
 			playwright = null; // Set to null to avoid reuse
 		}
+	}
+
+	/**
+	 * Ends the test execution by flushing reports.
+	 */
+	public static void endAllTest() {
+		// Flush reports and clean up
+		flushExtentReports();
+
 	}
 }
