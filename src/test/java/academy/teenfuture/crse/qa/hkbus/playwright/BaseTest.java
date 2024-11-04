@@ -92,6 +92,7 @@ public class BaseTest {
 	protected static BrowserType browserType;
 	protected static Page page;
 	protected static BrowserContext browserContext;
+	protected static boolean isVideoRecording; // Track if video recording is enabled
 
 	private static ExtentReports extent;
 	private ExtentTest test;
@@ -117,6 +118,8 @@ public class BaseTest {
 	 * @throws IllegalArgumentException if an unsupported browser is specified.
 	 */
 	public Page configure(String browserName, boolean isVideo) {
+		isVideoRecording = isVideo;
+
 		if (playwright == null) {
 			playwright = Playwright.create();
 		}
@@ -201,6 +204,7 @@ public class BaseTest {
 				} else {
 					System.err.println("Failed to rename video file.");
 				}
+
 			}
 		}));
 	}
@@ -282,18 +286,20 @@ public class BaseTest {
 	 * Ends the test execution by cleaning up resources.
 	 */
 	public void endEachTest() {
-		// Flush reports and clean up
-		if (page != null) {
-			page.close();
-			page = null; // Set to null to avoid reuse
-		}
-		if (browserContext != null) {
-			browserContext.close();
-			browserContext = null; // Set to null to avoid reuse
-		}
-		if (playwright != null) {
-			playwright.close();
-			playwright = null; // Set to null to avoid reuse
+		// Cleanup resources only if video recording is not enabled
+		if (!isVideoRecording) {
+			if (page != null) {
+				page.close();
+				page = null; // Set to null to avoid reuse
+			}
+			if (browserContext != null) {
+				browserContext.close();
+				browserContext = null; // Set to null to avoid reuse
+			}
+			if (playwright != null) {
+				playwright.close();
+				playwright = null; // Set to null to avoid reuse
+			}
 		}
 	}
 
