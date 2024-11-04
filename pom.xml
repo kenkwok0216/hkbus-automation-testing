@@ -8,11 +8,11 @@
         <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>academy.teenfuture</groupId>
-    <artifactId>crse</artifactId>
+    <groupId>academy.teenfuture.crse.qa.hkbus</groupId>
+    <artifactId>hkbus-app-web-testing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>crse-springboot</name>
-    <description>Demo project for Spring Boot</description>
+    <name>hkbus-web-testing</name>
+    <description>Automation testing for hkbus.app website</description>
     <properties>
         <java.version>20</java.version>
     </properties>
@@ -109,7 +109,7 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>1.37.0</version>
+            <version>1.40.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -180,6 +180,13 @@
             <groupId>com.jsexecutor</groupId>
             <artifactId>jsexecutor-core</artifactId>
             <version>1.0.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
 
       </dependencies>

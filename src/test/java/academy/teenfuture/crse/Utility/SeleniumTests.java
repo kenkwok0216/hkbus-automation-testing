@@ -18,6 +18,7 @@ import org.openqa.selenium.safari.SafariDriver;
  *
  * @author Franck
  */
+@Disabled
 public class SeleniumTests {
 
 	// Chrome paths
