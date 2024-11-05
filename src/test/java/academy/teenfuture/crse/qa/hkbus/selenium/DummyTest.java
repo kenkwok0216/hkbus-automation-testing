@@ -9,19 +9,30 @@ import org.junit.jupiter.api.Test;
  */
 public class DummyTest extends BaseTest {
 
-    @BeforeEach
-    public void start() {
-        super.configureBrowser("Firefox").get("https://www.google.com.hk");
-    }
+	@BeforeEach
+	public void start() {
+		super.configureBrowser("Firefox", true).get("https://www.google.com.hk");
+	}
 
-    @Test
-    public void simpleDummyTest() {
+	@Test
+	public void simpleDummyTest() {
+		String testName = "Simple Dummy Test";
+		boolean isSuccess = false;
 
-    }
+		try {
+			// Your test code here
+			String pageTitle = driver.getTitle();
+			assert pageTitle.equals("Google");
+			isSuccess = true; // Set to true if the test passes
+			generateExtentTest(testName, isSuccess, "Test passed successfully.");
+		} catch (Exception e) {
+			generateExtentTest(testName, isSuccess, "Test failed: " + e.getMessage());
+		}
+	}
 
-    @AfterEach
-    public void end() {
-        driver.close();
-    }
+	@AfterEach
+	public void end() {
+		quitDriver();
+	}
 
 }
