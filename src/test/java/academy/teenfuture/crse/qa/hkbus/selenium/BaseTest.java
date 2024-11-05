@@ -10,7 +10,10 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -243,7 +246,8 @@ public class BaseTest {
 		test = extent.createTest(testName);
 
 		if (isSuccess) {
-			test.pass(message);
+			String base64Image = Base64.getEncoder().encodeToString(screenshot);
+			test.pass(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
 		} else {
 			String base64Image = Base64.getEncoder().encodeToString(screenshot);
 			test.fail(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
@@ -257,6 +261,21 @@ public class BaseTest {
 	public static void flushExtentReports() {
 		if (extent != null) {
 			extent.flush();
+		}
+	}
+
+	/**
+	 * Captures a screenshot and returns it as a byte array.
+	 *
+	 * @return byte array of the screenshot.
+	 */
+	protected byte[] captureScreenshot() {
+		try {
+			TakesScreenshot ts = (TakesScreenshot) driver;
+			return ts.getScreenshotAs(OutputType.BYTES);
+		} catch (WebDriverException e) {
+			System.err.println("Failed to capture screenshot: " + e.getMessage());
+			return new byte[0]; // Return an empty byte array if screenshot fails
 		}
 	}
 

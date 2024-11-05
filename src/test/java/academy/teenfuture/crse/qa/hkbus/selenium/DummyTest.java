@@ -11,7 +11,7 @@ public class DummyTest extends BaseTest {
 
 	@BeforeEach
 	public void start() {
-		super.configureBrowser("Firefox", true).get("https://www.google.com.hk");
+		super.configureBrowser("Firefox").get("https://www.google.com.hk");
 	}
 
 	@Test
@@ -24,7 +24,8 @@ public class DummyTest extends BaseTest {
 			String pageTitle = driver.getTitle();
 			assert pageTitle.equals("Google");
 			isSuccess = true; // Set to true if the test passes
-			generateExtentTest(testName, isSuccess, "Test passed successfully.");
+			byte[] screenshot = captureScreenshot();
+			generateExtentTest(testName, isSuccess, "Test passed successfully.", screenshot);
 		} catch (Exception e) {
 			generateExtentTest(testName, isSuccess, "Test failed: " + e.getMessage());
 		}
