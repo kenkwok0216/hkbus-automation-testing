@@ -262,7 +262,8 @@ public class BaseTest {
 		test = extent.createTest(testName);
 
 		if (isSuccess) {
-			test.pass(message);
+			String base64Image = Base64.getEncoder().encodeToString(screenshot);
+			test.pass(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
 		} else {
 			String base64Image = Base64.getEncoder().encodeToString(screenshot);
 			test.fail(message, MediaEntityBuilder.createScreenCaptureFromBase64String(base64Image).build());
