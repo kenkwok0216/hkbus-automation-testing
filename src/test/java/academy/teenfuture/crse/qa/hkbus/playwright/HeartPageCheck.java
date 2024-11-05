@@ -7,200 +7,125 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import com.microsoft.playwright.Locator;
 
+/**
+ * The {@code HeartPageCheck} class contains test cases for the Heart Page of
+ * the HKBus application. It utilizes the Playwright library to automate browser
+ * interactions for testing various functionalities such as emoji selection,
+ * noun selection, adjective selection, and submission processes.
+ * 
+ * This class extends {@link BaseTest} to inherit common testing
+ * functionalities.
+ *
+ * <p>
+ * The tests are executed in the following order:
+ * <ul>
+ * <li>{@code emojiTest}</li>
+ * <li>{@code nounTest}</li>
+ * <li>{@code adjectiveTest}</li>
+ * <li>{@code SubmitButtonTest}</li>
+ * <li>{@code SubmissionTest}</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Each test case is annotated with {@code @Order(n)} to specify the execution
+ * order. The {@code @Disabled} annotation can be used to skip specific tests
+ * during execution.
+ * </p>
+ * 
+ * <p>
+ * The class includes setup and teardown methods to manage the test environment:
+ * <ul>
+ * <li>{@code start()} is executed before each test to navigate to the Heart
+ * Page.</li>
+ * <li>{@code endEach()} is executed after each test to reset the test
+ * environment.</li>
+ * <li>{@code endAll()} is executed after all tests have run to perform final
+ * cleanup.</li>
+ * </ul>
+ * </p>
+ * 
+ * <p>
+ * Note: Tests may include thread sleep statements for synchronization purposes,
+ * which can be adjusted based on the application's responsiveness.
+ * </p>
+ * 
+ * @see BaseTest
+ * 
+ * @author Ken Kwok
+ */
 public class HeartPageCheck extends BaseTest {
 
+	/**
+	 * Sets up the test environment before each test. This method navigates to the
+	 * Heart Page of the HKBus application and ensures the necessary UI elements are
+	 * ready for interaction.
+	 *
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	@BeforeEach
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
-		super.configure("firefox").navigate("https://hkbus.app/en");
+		super.configure("firefox", true).navigate("https://hkbus.app/en");
 		// Locate button to Heart Page and click it
 		Locator HeartPage = page.locator("//*[@id=\"root\"]/div/div[3]/a[6]");
 		HeartPage.click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Tests the selection of emoji options on the Heart Page.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
 	@Test
-	@Disabled
+	@Order(1)
+	// @Disabled
 	public void emojiTest() throws InterruptedException, IOException {
-		// Test Name of the method
-		String testName = "Test for first question";
-
-		// Locator the emojis option lines
-		Locator emojiLocator = page.locator("(//div[@role='group'])[1]");
-
-		// Locator all the option in the emojis lines
-		Locator emojis = emojiLocator.locator("button");
-
-		// Get the number of button
-		int count = emojis.count();
-
-		// This boolean is to test whether the whole test pass
-		boolean error = false;
-
-		// Loop through each button and click it
-		for (int i = 0; i < count; i++) {
-			try {
-				Locator emoji = emojis.nth(i);
-				emoji.click();
-				Thread.sleep(1000);
-
-				// Get whether the button is clicked
-				String ariaPressed = emoji.getAttribute("aria-pressed");
-				if (ariaPressed.equals("false")) {
-					throw new Exception("The button cannot be selected");
-				}
-
-				for (int j = 0; j < count; j++) {
-					// Check whether other button is de-selected
-					if (j != i) {
-						Locator otherEmoji = emojis.nth(j);
-						String otherAriaPressed = otherEmoji.getAttribute("aria-pressed");
-						if (otherAriaPressed.equals("true")) {
-							throw new Exception("The other buttons are not de-selected");
-						}
-					}
-				}
-
-			} catch (Exception e) {
-
-				byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[1]").screenshot();
-				super.generateExtentTest(testName, false, e.getMessage(), screenshot);
-				error = true;
-
-			}
-
-		}
-
-		// if there are no error pass the test
-		if (!error) {
-			byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[1]").screenshot();
-			super.generateExtentTest(testName, true, "This test case is pass", screenshot);
-		}
+		testSelection("Test for emojis", "(//div[@role='group'])[1]", 1);
 	}
 
+	/**
+	 * Tests the selection of noun options on the Heart Page.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
 	@Test
-	@Disabled
-	public void NounTest() throws InterruptedException, IOException {
-		// Test Name of the method
-		String testName = "Test for second question";
-
-		// Locator the noun option lines
-		Locator nounLocator = page.locator("(//div[@role='group'])[2]");
-
-		// Locator all the option in the nouns lines
-		Locator nouns = nounLocator.locator("button");
-
-		// Get the number of button
-		int count = nouns.count();
-
-		// This boolean is to test whether the whole test pass
-		boolean error = false;
-
-		// Loop through each button and click it
-		for (int i = 0; i < count; i++) {
-			try {
-				Locator noun = nouns.nth(i);
-				noun.click();
-				Thread.sleep(1000);
-
-				// Get whether the button is clicked
-				String ariaPressed = noun.getAttribute("aria-pressed");
-				if (ariaPressed.equals("false")) {
-					throw new Exception("The button cannot be selected");
-				}
-
-				for (int j = 0; j < count; j++) {
-					// Check whether other button is de-selected
-					if (j != i) {
-						Locator othernoun = nouns.nth(j);
-						String otherAriaPressed = othernoun.getAttribute("aria-pressed");
-						if (otherAriaPressed.equals("true")) {
-							throw new Exception("The other buttons are not de-selected");
-						}
-					}
-				}
-
-			} catch (Exception e) {
-
-				byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[2]").screenshot();
-				super.generateExtentTest(testName, false, e.getMessage(), screenshot);
-				error = true;
-
-			}
-
-		}
-
-		// if there are no error pass the test
-		if (!error) {
-			byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[2]").screenshot();
-			super.generateExtentTest(testName, true, "This test case is pass", screenshot);
-		}
+	@Order(2)
+	// @Disabled
+	public void nounTest() throws InterruptedException, IOException {
+		testSelection("Test for nouns", "(//div[@role='group'])[2]", 2);
 	}
 
+	/**
+	 * Tests the selection of adjective options on the Heart Page.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
 	@Test
-	@Disabled
+	@Order(3)
+	// @Disabled
 	public void adjectiveTest() throws InterruptedException, IOException {
-		// Test Name of the method
-		String testName = "Test for third question";
-
-		// Locator the adjective option lines
-		Locator adjectiveLocator = page.locator("(//div[@role='group'])[3]");
-
-		// Locator all the option in the adjectives lines
-		Locator adjectives = adjectiveLocator.locator("button");
-
-		// Get the number of button
-		int count = adjectives.count();
-
-		// This boolean is to test whether the whole test pass
-		boolean error = false;
-
-		// Loop through each button and click it
-		for (int i = 0; i < count; i++) {
-			try {
-				Locator adjective = adjectives.nth(i);
-				adjective.click();
-				Thread.sleep(1000);
-
-				// Get whether the button is clicked
-				String ariaPressed = adjective.getAttribute("aria-pressed");
-				if (ariaPressed.equals("false")) {
-					throw new Exception("The button cannot be selected");
-				}
-
-				for (int j = 0; j < count; j++) {
-					// Check whether other button is de-selected
-					if (j != i) {
-						Locator otheradjective = adjectives.nth(j);
-						String otherAriaPressed = otheradjective.getAttribute("aria-pressed");
-						if (otherAriaPressed.equals("true")) {
-							throw new Exception("The other buttons are not de-selected");
-						}
-					}
-				}
-
-			} catch (Exception e) {
-
-				byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[3]").screenshot();
-				super.generateExtentTest(testName, false, e.getMessage(), screenshot);
-				error = true;
-
-			}
-
-		}
-
-		// if there are no error pass the test
-		if (!error) {
-			byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[3]").screenshot();
-			super.generateExtentTest(testName, true, "This test case is pass", screenshot);
-		}
+		testSelection("Test for adjectives", "(//div[@role='group'])[3]", 3);
 	}
 
+	/**
+	 * Tests the behavior of the 'OK' button after all questions are answered. This
+	 * test is currently disabled.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
 	@Test
+	@Order(4)
 	@Disabled
 	public void SubmitButtonTest() throws InterruptedException, IOException {
 		// Test Name of the method
@@ -236,7 +161,15 @@ public class HeartPageCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Tests the overall submission functionality of the Heart Page. This test is
+	 * currently disabled.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
 	@Test
+	@Order(5)
 	@Disabled
 	public void SubmissionTest() throws InterruptedException, IOException {
 		// Test Name of the method
@@ -275,16 +208,105 @@ public class HeartPageCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Cleans up after each test, ensuring the test environment is properly reset.
+	 * This method is called after each test execution to allow for any necessary
+	 * cleanup or state resets.
+	 *
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	@AfterEach
-	public void endEach() {
+	public void endEach() throws InterruptedException {
+		Thread.sleep(1000);
 		endEachTest();
 	}
 
+	/**
+	 * Final cleanup after all tests have executed. This method is called after all
+	 * tests have completed to perform any final cleanup or resource release.
+	 *
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	@AfterAll
-	public static void endAll() {
+	public static void endAll() throws InterruptedException {
+		Thread.sleep(1000);
 		endAllTest();
 	}
 
+	/**
+	 * Executes a selection test based on provided parameters.
+	 * 
+	 * @param testName          the name of the test being executed.
+	 * @param locatorExpression the XPath expression to locate the options.
+	 * @param groupIndex        the index of the group in the DOM.
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 */
+	private void testSelection(String testName, String locatorExpression, int groupIndex)
+			throws InterruptedException, IOException {
+		// Locator the option lines
+		Locator optionLocator = page.locator(locatorExpression);
+		Thread.sleep(1000);
+
+		// Locator all the options in the lines
+		Locator options = optionLocator.locator("button");
+		Thread.sleep(1000);
+
+		// Get the number of buttons
+		int count = options.count();
+
+		// Boolean to track test success
+		boolean error = false;
+
+		// Loop through each button and click it
+		for (int i = 0; i < count; i++) {
+			try {
+				Locator option = options.nth(i);
+				option.click();
+				Thread.sleep(1000);
+
+				// Check if the button is clicked
+				String ariaPressed = option.getAttribute("aria-pressed");
+				if (ariaPressed.equals("false")) {
+					throw new Exception("The button cannot be selected");
+				}
+
+				for (int j = 0; j < count; j++) {
+					// Check whether other buttons are de-selected
+					if (j != i) {
+						Locator otherOption = options.nth(j);
+						String otherAriaPressed = otherOption.getAttribute("aria-pressed");
+						if (otherAriaPressed.equals("true")) {
+							throw new Exception("The other buttons are not de-selected");
+						}
+					}
+				}
+
+			} catch (Exception e) {
+				byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[" + groupIndex + "]")
+						.screenshot();
+				super.generateExtentTest(testName, false, e.getMessage(), screenshot);
+				error = true;
+			}
+		}
+
+		// If there are no errors, pass the test
+		if (!error) {
+			byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[" + groupIndex + "]")
+					.screenshot();
+			super.generateExtentTest(testName, true, "This test case is passed", screenshot);
+		}
+	}
+
+	/**
+	 * Updates the state of the 'OK' button based on whether all questions are
+	 * answered.
+	 * 
+	 * @param isAnsweredAllQuestion boolean indicating if all questions are
+	 *                              answered.
+	 * @param testName              the name of the test for logging purposes.
+	 * @throws IOException if an I/O error occurs during test execution.
+	 */
 	private void updateOkButtonState(boolean isAnsweredAllQuestion, String testName) throws IOException {
 		try {
 
@@ -314,6 +336,16 @@ public class HeartPageCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Randomly answers a question based on the provided locator.
+	 * 
+	 * @param answer1               the locator for the first answer.
+	 * @param isAnsweredAllQuestion boolean indicating if all questions are
+	 *                              answered.
+	 * @param testName              the name of the test for logging purposes.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	private void randomAnswerQuestion(Locator answer1, boolean isAnsweredAllQuestion, String testName)
 			throws IOException, InterruptedException {
 		// Create a random object for random answer for each question
@@ -335,6 +367,17 @@ public class HeartPageCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Randomly answers two questions based on the provided locators.
+	 * 
+	 * @param answer1               the locator for the first answer.
+	 * @param answer2               the locator for the second answer.
+	 * @param isAnsweredAllQuestion boolean indicating if all questions are
+	 *                              answered.
+	 * @param testName              the name of the test for logging purposes.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	private void randomAnswerQuestion(Locator answer1, Locator answer2, boolean isAnsweredAllQuestion, String testName)
 			throws IOException, InterruptedException {
 		// Create a random object for random answer for each question
@@ -361,6 +404,18 @@ public class HeartPageCheck extends BaseTest {
 		Thread.sleep(2000);
 	}
 
+	/**
+	 * Randomly answers three questions based on the provided locators.
+	 * 
+	 * @param answer1               the locator for the first answer.
+	 * @param answer2               the locator for the second answer.
+	 * @param answer3               the locator for the third answer.
+	 * @param isAnsweredAllQuestion boolean indicating if all questions are
+	 *                              answered.
+	 * @param testName              the name of the test for logging purposes.
+	 * @throws IOException          if an I/O error occurs during test execution.
+	 * @throws InterruptedException if the thread is interrupted during sleep.
+	 */
 	private void randomAnswerQuestion(Locator answer1, Locator answer2, Locator answer3, boolean isAnsweredAllQuestion,
 			String testName) throws IOException, InterruptedException {
 		// Create a random object for random answer for each question
