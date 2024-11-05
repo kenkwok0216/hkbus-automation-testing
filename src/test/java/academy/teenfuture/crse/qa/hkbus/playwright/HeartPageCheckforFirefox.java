@@ -32,7 +32,7 @@ import com.microsoft.playwright.Locator;
  * @author Ken Kwok
  * @see HeartPageCheck
  */
-public class HearPageCheckforFirefox extends HeartPageCheck {
+public class HeartPageCheckforFirefox extends HeartPageCheck {
 	/**
 	 * Sets up the test environment before each test. This method is overridden to
 	 * configure Playwright to use the Firefox browser and navigate to the Heart
