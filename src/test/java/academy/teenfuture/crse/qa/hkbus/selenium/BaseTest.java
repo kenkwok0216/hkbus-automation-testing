@@ -177,6 +177,14 @@ public class BaseTest {
 		return driver;
 	}
 
+	/**
+	 * Quits the WebDriver instance and releases any associated resources. This
+	 * method ensures that the browser is closed and any video recording, if
+	 * started, is stopped properly.
+	 *
+	 * @throws RuntimeException if an error occurs while stopping the video
+	 *                          recording.
+	 */
 	public void quitDriver() {
 		if (driver != null) {
 			driver.quit();
@@ -189,6 +197,14 @@ public class BaseTest {
 				System.err.println("Failed to stop video recording: " + e.getMessage());
 			}
 		}
+	}
+
+	/**
+	 * Flushes the ExtentReports instance, writing all report data to the output
+	 * file. This method should be called after all tests have been executed to
+	 * ensure that the report contains the latest results and is properly saved.
+	 */
+	public static void endAllTest() {
 		flushExtentReports(); // Flush the ExtentReports instance to save the report
 	}
 
