@@ -1,5 +1,6 @@
 package academy.teenfuture.crse.qa.hkbus.selenium;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,11 @@ public class DummyTest extends BaseTest {
 	@AfterEach
 	public void end() {
 		quitDriver();
+	}
+
+	@AfterAll
+	public static void endAll() {
+		endAllTest();
 	}
 
 }

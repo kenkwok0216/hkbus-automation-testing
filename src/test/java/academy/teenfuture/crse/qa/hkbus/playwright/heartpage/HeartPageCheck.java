@@ -1,4 +1,4 @@
-package academy.teenfuture.crse.qa.hkbus.playwright;
+package academy.teenfuture.crse.qa.hkbus.playwright.heartpage;
 
 import java.io.IOException;
 import java.util.Random;
@@ -7,10 +7,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
-import com.microsoft.playwright.Locator;
 
 /**
  * The {@code HeartPageCheck} class contains test cases for the Heart Page of
@@ -59,6 +58,14 @@ import com.microsoft.playwright.Locator;
  * 
  * @author Ken Kwok
  */
+
+import org.junit.jupiter.api.TestMethodOrder;
+
+import com.microsoft.playwright.Locator;
+
+import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HeartPageCheck extends BaseTest {
 
 	/**
@@ -71,7 +78,7 @@ public class HeartPageCheck extends BaseTest {
 	@BeforeEach
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
-		super.configure("firefox", true).navigate("https://hkbus.app/en");
+		super.configure("firefox", false).navigate("https://hkbus.app/en");
 		// Locate button to Heart Page and click it
 		Locator HeartPage = page.locator("//*[@id=\"root\"]/div/div[3]/a[6]");
 		HeartPage.click();
@@ -294,7 +301,7 @@ public class HeartPageCheck extends BaseTest {
 		if (!error) {
 			byte[] screenshot = page.locator("(//div[@class='MuiBox-root hkbus-srxn8'])[" + groupIndex + "]")
 					.screenshot();
-			super.generateExtentTest(testName, true, "This test case is passed", screenshot);
+			super.generateExtentTest(testName, true, "This test case is passed");
 		}
 	}
 
