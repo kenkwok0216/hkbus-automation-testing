@@ -166,7 +166,9 @@ public class BaseTest {
 				throw new IllegalArgumentException("Unsupported browser: " + browserName);
 			}
 
-			page = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false)).newContext().newPage();
+			Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
+			browserContext = browser.newContext();
+			page = browserContext.newPage();
 		}
 
 		return page;
@@ -312,4 +314,5 @@ public class BaseTest {
 		flushExtentReports();
 
 	}
+
 }
