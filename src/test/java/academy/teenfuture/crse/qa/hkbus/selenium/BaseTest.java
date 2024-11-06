@@ -204,7 +204,7 @@ public class BaseTest {
 	 * file. This method should be called after all tests have been executed to
 	 * ensure that the report contains the latest results and is properly saved.
 	 */
-	public void endAllTest() {
+	public static void endAllTest() {
 		flushExtentReports(); // Flush the ExtentReports instance to save the report
 	}
 
