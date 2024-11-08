@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
+import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.util.ReadJson;
 
 //This test focuses on verifying navigation to the corresponding page and handling pop-ups.
 //It does not cover the detailed functionality of the navigated pages or pop-ups.
@@ -25,14 +27,34 @@ import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
 //2. Handling pop-up dialogs.
 //3. Navigating to different pages within the application.
 //4. Navigating to external websites.
-//5. Clicking Copy App URL button (system level pop of of copy app url will be skipped)
 //
 //Each test case is designed to isolate specific behaviors, ensuring better readability 
 //and maintainability in the test suite.
 
+/**
+ * Test class for verifying the functionality of the Settings page in the HKBus
+ * application.
+ *
+ * This class includes tests for: 1. Toggling various settings on and off (e.g.,
+ * Geolocation, Auto Update Route Database). 2. Handling pop-up dialogs for app
+ * installation and customization. 3. Navigating to different pages within the
+ * application. 4. Navigating to external websites.
+ *
+ * Each test is designed to isolate specific behaviors, ensuring better
+ * readability and maintainability.
+ * 
+ * @author Ken Kwok
+ * @see BaseTest
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SettingPageCheck extends BaseTest {
 
+	/**
+	 * Sets up the environment before each test. Navigates to the settings page of
+	 * the HKBus application.
+	 *
+	 * @throws InterruptedException if the thread is interrupted while sleeping.
+	 */
 	@BeforeEach
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
@@ -44,6 +66,13 @@ public class SettingPageCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Tests the toggling of settings on and off. Currently disabled.
+	 *
+	 * @throws IOException          if there is an issue with input/output
+	 *                              operations.
+	 * @throws InterruptedException if the thread is interrupted while sleeping.
+	 */
 	// This method is to test the button with on and off in this page
 	// i.e. Geolocation, Auto Update Route Database and Google Analytics
 	@Test
@@ -74,9 +103,18 @@ public class SettingPageCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Tests the behavior of pop-up dialogs related to installing the app and
+	 * customizing settings. Currently disabled.
+	 *
+	 * @throws IOException          if there is an issue with input/output
+	 *                              operations.
+	 * @throws InterruptedException if the thread is interrupted while sleeping.
+	 */
 	// This method is to test the button with pop up
 	// i.e. install the app, Customize
 	@Test
+	@Disabled
 	@Order(2)
 	public void popUpTest() throws IOException, InterruptedException {
 		String testName = "pop up window test";
@@ -122,16 +160,185 @@ public class SettingPageCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Tests navigation within the app to various internal pages. Currently
+	 * disabled.
+	 *
+	 * @throws IOException if there is an issue with input/output operations.
+	 */
+	// This method is to test the button that will navigate to the pages within the
+	// app, difference from popUpTest, i try use other method to handle it
+	// i.e. data export, data import, Privacy Policy and Terms and Conditions
+	@Test
+	@Disabled
+	@Order(3)
+	public void NavigateWithInAppTest() throws IOException {
+		String testName = "Navigate with in the app Test";
+
+		// Define an array of locators and their corresponding names
+		Locator[] locators = new Locator[] { page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/li"), // Data export
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[8]"), // Data import
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[8]"), // Privacy Policy
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[9]") // Terms and Conditions
+
+		};
+
+		// The button name and the corresponding page name suffix
+		String[][] SettingName = new String[][] { { "Data Export", "export" }, { "Data Import", "import" },
+				{ "Privacy Policy", "privacy" }, { "terms and conditions", "terms" } };
+
+		// This is to store the result
+		boolean error = false;
+
+		for (int i = 0; i < locators.length; i++) {
+
+			locators[i].click();
+
+			// waiting to allow the page to load
+			page.waitForLoadState();
+
+			try {
+
+				String currentUrl = page.url(); // Get the current URL after clicking
+
+				if (currentUrl.endsWith(SettingName[i][1])) {
+
+					// System.out.println(SettingName[i][0] + " is okay");
+					page.goBack();
+
+				} else {
+
+					throw new Exception(SettingName[i][0] + " is navigating to wrong page");
+
+				}
+
+			} catch (Exception e) {
+
+				super.generateExtentTest(testName, false, e.getMessage(), page.screenshot());
+				error = true;
+
+			}
+
+		}
+
+		if (!error) { // if no error
+
+			super.generateExtentTest(testName, true, "This test case is pass for all navigation with in app");
+
+		}
+
+	}
+
+	/**
+	 * Tests navigation to external pages from the app. Currently disabled.
+	 *
+	 * @throws IOException if there is an issue with input/output operations.
+	 * @throws Exception   if any other error occurs during the test.
+	 */
+	// This method is to test button that will navigate to external page
+	// i.e. Smart Watch App, Telegram Group, Data Aggregation, Donate, Source code,
+	// FAQ, Log Designer (Donate is skipped since it will changed the donate
+	// company)
+	// For this test, we will use json file way to do it
+	// Base on the result, it may return error sometimes, even no error occur
+	@Test
+	@Disabled
+	@Order(4)
+	public void NavigatePageTest() throws IOException, Exception {
+		String testName = "Navigate to other page test";
+
+		// Define an array of locators and their corresponding names
+		Locator[] locators = new Locator[] { page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[1]"), // Smart Watch
+																										// App
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[2]"), // Telegram Group
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[3]"), // Data Aggregation
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[5]"), // Source code
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[6]"), // FAQ
+				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[7]") // Log Designer
+
+		};
+
+		String[] settingNames = new String[] { "Smart Watch App", "Telegram Group", "Data Aggregation", "Source Code",
+				"FAQ", "Log Designer" };
+
+		// This is to store the result
+		boolean error = false;
+
+		for (int i = 0; i < locators.length; i++) {
+
+			locators[i].click();
+
+			Page newPage = page.context().waitForPage(() -> {
+				// no need to do anything in the listener
+			});
+
+			try {
+
+				// Wait for the new page to load completely
+				newPage.waitForLoadState();
+
+				Thread.sleep(5000);
+
+				// Get the current URL after navigation
+				String currentUrl = newPage.url();
+
+				// Read the expected URL from the JSON file
+				String expectedUrl = ReadJson.readJsonFile(settingNames[i]);
+
+				System.out.println(currentUrl);
+
+				if (!expectedUrl.equals(currentUrl)) {
+					throw new Exception(settingNames[i] + " navigate to wrong page");
+				}
+
+				Thread.sleep(3000);
+
+			} catch (Exception e) {
+
+				super.generateExtentTest(testName, false, e.getMessage(), newPage.screenshot());
+				error = true;
+
+			} finally {
+
+				newPage.close();
+				Thread.sleep(3000);
+
+			}
+
+		}
+
+		if (!error) {
+
+			super.generateExtentTest(testName, true, "This test case is pass for all navigation to other apge");
+
+		}
+
+	}
+
+	/**
+	 * Cleans up after each test.
+	 */
 	@AfterEach
 	public void endEach() {
 		endEachTest();
 	}
 
+	/**
+	 * Cleans up resources after all tests have run.
+	 */
 	@AfterAll
 	public static void endAll() {
 		endAllTest();
 	}
 
+	/**
+	 * Toggles a given setting on and off and verifies its status.
+	 *
+	 * @param settingLocator the Locator for the setting to toggle.
+	 * @param settingName    the name of the setting being toggled.
+	 * @param testName       the name of the test case.
+	 * @throws IOException if there is an issue with input/output operations.
+	 */
 	// Helper method to toggle a setting and verify its status
 	private void toggleSettingOnAndOff(Locator settingLocator, String settingName, String testName) throws IOException {
 		// Create a scanner for user input
@@ -168,6 +375,12 @@ public class SettingPageCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Retrieves the current status of the setting (on or off).
+	 *
+	 * @param settingLocator the Locator for the setting.
+	 * @return the current status as a string ("on" or "off").
+	 */
 	// Mockup for onAndOffStatus method
 	private String onAndOffStatus(Locator settingLocator) {
 		String statusText = settingLocator.locator("p").innerText().trim(); // Adjust the selector as needed
