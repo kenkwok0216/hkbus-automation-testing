@@ -1,1 +1,0 @@
-tagSearchIndex = [{"l":"Supported Browsers","h":"class academy.teenfuture.crse.qa.hkbus.playwright.BaseTest","d":"Section","u":"academy/teenfuture/crse/qa/hkbus/playwright/BaseTest.html#supported-browsers-heading"}];updateSearchResults();
