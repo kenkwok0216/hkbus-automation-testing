@@ -16,6 +16,10 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
+import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.strategy.CustomizeStrategy;
+import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.strategy.InstallAppStrategy;
+import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.strategy.PopUpHandler;
+import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.strategy.PopUpStrategy;
 import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.util.ReadJson;
 
 //This test focuses on verifying navigation to the corresponding page and handling pop-ups.
@@ -59,11 +63,13 @@ public class SettingPageCheck extends BaseTest {
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
 
+		Thread.sleep(3000);
 		super.configure("Firefox").navigate("https://hkbus.app/en");
 		// Locate button to Heart Page and click it
 		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");
 		SettingPage.click();
 
+		Thread.sleep(3000);
 	}
 
 	/**
@@ -114,7 +120,7 @@ public class SettingPageCheck extends BaseTest {
 	// This method is to test the button with pop up
 	// i.e. install the app, Customize
 	@Test
-	@Disabled
+	// @Disabled
 	@Order(2)
 	public void popUpTest() throws IOException, InterruptedException {
 		String testName = "pop up window test";
@@ -130,6 +136,8 @@ public class SettingPageCheck extends BaseTest {
 
 		// Iterate through each setting
 		for (int i = 0; i < locators.length; i++) {
+			locators[i].click();
+			Thread.sleep(3000);
 			// Declare a PopUpStrategy variable to hold the current strategy implementation
 			PopUpStrategy strategy;
 			// Determine the strategy based on the settingName
@@ -176,7 +184,7 @@ public class SettingPageCheck extends BaseTest {
 		String testName = "Navigate with in the app Test";
 
 		// Define an array of locators and their corresponding names
-		Locator[] locators = new Locator[] { page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/li"), // Data export
+		Locator[] locators = new Locator[] { page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[7]"), // Data export
 				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[8]"), // Data import
 				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[8]"), // Privacy Policy
 				page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/a[9]") // Terms and Conditions
@@ -285,7 +293,7 @@ public class SettingPageCheck extends BaseTest {
 				// Read the expected URL from the JSON file
 				String expectedUrl = ReadJson.readJsonFile(settingNames[i]);
 
-				System.out.println(currentUrl);
+				// System.out.println(currentUrl);
 
 				if (!expectedUrl.equals(currentUrl)) {
 					throw new Exception(settingNames[i] + " navigate to wrong page");
@@ -357,7 +365,7 @@ public class SettingPageCheck extends BaseTest {
 					scanner.nextLine(); // Wait for user input
 				}
 
-				Thread.sleep(10000);
+				Thread.sleep(3000);
 
 				// Verify the new status
 				String newStatus = onAndOffStatus(settingLocator);

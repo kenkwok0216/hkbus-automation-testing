@@ -1,4 +1,4 @@
-package academy.teenfuture.crse.qa.hkbus.playwright.settingpage;
+package academy.teenfuture.crse.qa.hkbus.playwright.settingpage.strategy;
 
 import com.microsoft.playwright.Page;
 
