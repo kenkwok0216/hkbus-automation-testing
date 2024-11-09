@@ -63,9 +63,16 @@ public class SettingPageCheck extends BaseTest {
 		// Locate button to Heart Page and click it
 		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");
 		SettingPage.click();
+		Thread.sleep(100000);
 
 	}
 
+	@Test
+	public void test() {
+		
+	}
+	
+	
 	/**
 	 * Tests the toggling of settings on and off. Currently disabled.
 	 *
@@ -93,8 +100,10 @@ public class SettingPageCheck extends BaseTest {
 
 		// Iterate through each setting
 		for (int i = 0; i < locators.length; i++) {
-			// In this stage, skip the geolocation first since it seem to be rejecting
-			// permission given in Playwright
+			// In this stage, skip the geolocation 
+			// since even if the geolocation is given
+			// It is not able to enable the geolocations
+			// BUT it works manually using incognito mode
 			if (settingNames[i].equals("Geolocation")) {
 				continue;
 			}
