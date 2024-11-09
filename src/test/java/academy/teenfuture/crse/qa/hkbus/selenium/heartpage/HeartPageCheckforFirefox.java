@@ -4,8 +4,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+/**
+ * This class extends the HeartPageCheck to provide specific configurations and
+ * tests for the Firefox browser.
+ * 
+ * @author Ken Kwok
+ * @see HeartPageCheck
+ */
 public class HeartPageCheckforFirefox extends HeartPageCheck {
 
+	/**
+	 * Sets up the Firefox browser and navigates to the HKBus application before
+	 * each test. It clicks on the Heart Page button after a brief wait.
+	 * 
+	 * @throws InterruptedException if the thread is interrupted while sleeping
+	 */
 	@BeforeEach
 	@Override
 	public void start() throws InterruptedException {
