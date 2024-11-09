@@ -1,5 +1,6 @@
 HELP.md
 target/
+testresult/
 ./settings
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
