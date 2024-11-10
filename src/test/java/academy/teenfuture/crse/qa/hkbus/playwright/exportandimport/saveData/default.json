@@ -1,0 +1,20 @@
+{
+    "Saved Stops": [],
+    "Saved Etas": [],
+    "Collections Home": [],
+	"Collections Work": [],
+	"Collections New": [],
+	"Setting": {
+    "Appearance": "Same as system",
+    "Power Saving Mode": "Map - On",
+    "Platform Display Format": "①",
+    "Refresh Interval": "30s",
+    "Annotate Scheduled Bus": "Off",
+    "Vibration": "On",
+    "Eta Format": "Minute Remaining",
+    "Keyboard Layout": "123456789c0b",
+    "Route Filtering": "Show all Route",
+    "Bus Sort Order": "KMB first",
+    "Google Analytics": "On"
+	}
+}

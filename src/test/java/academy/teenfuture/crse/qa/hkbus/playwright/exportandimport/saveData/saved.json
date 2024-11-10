@@ -1,0 +1,82 @@
+{
+    "Collections Home": [],
+    "Saved Stops": [
+        "1\nCTB\nTo\nHappy Valley (Upper)\n\nCentral (Macau Ferry)",
+        "1\nCTB\nTo\nCentral (Macau Ferry)\n\nHappy Valley (Upper)",
+        "1SP.\nCTB\nTo\nHappy Valley (Upper)\n\nCentral (Macau Ferry)",
+        "1\nKMB\nTo\nStar Ferry\n\nChuk Yuen Estate",
+        "1\nKMB\nTo\nChuk Yuen Estate\n\nStar Ferry",
+        "1\nNLB\nTo\nTai O\n\nMui Wo Ferry Pier",
+        "1\nNLB\nTo\nMui Wo Ferry Pier\n\nTai O"
+    ],
+    "Saved Etas": [],
+    "Collections Work": [],
+    "Collections New": [],
+    "Settings": {
+        "Vibration": [
+            "Off",
+            "Off",
+            "Off"
+        ],
+        "Google Analytics": [
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On",
+            "On"
+        ],
+        "Route Filtering": [
+            "Show ONLY operating routes",
+            "Show ONLY operating routes",
+            "Show ONLY operating routes"
+        ],
+        "Power Saving Mode": [
+            "789456123c0b",
+            "789456123c0b",
+            "789456123c0b"
+        ],
+        "Keyboard Layout": [
+            "Map - OFF",
+            "Map - OFF",
+            "Map - OFF"
+        ],
+        "Eta Format": [
+            "➊",
+            "➊",
+            "➊"
+        ],
+        "Annotate Scheduled Bus": [
+            "On",
+            "On",
+            "On"
+        ],
+        "Refresh Interval": [
+            "36s",
+            "36s",
+            "36s"
+        ],
+        "Appearance": [
+            "Dark Theme",
+            "Dark Theme",
+            "Dark Theme"
+        ],
+        "Bus Sort Order": [
+            "CTB first",
+            "CTB first",
+            "CTB first"
+        ],
+        "Platform Display Format": [
+            "Clock time",
+            "Clock time",
+            "Clock time"
+        ]
+    }
+}
