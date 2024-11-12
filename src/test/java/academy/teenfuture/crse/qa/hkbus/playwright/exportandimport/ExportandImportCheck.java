@@ -69,110 +69,108 @@ public class ExportandImportCheck extends BaseTest {
 	@Order(1)
 	public void normalTest() throws Exception {
 
-//		// First we will edit the customize Setting First (i.e. the 4th items)
-//		// Navigate to Setting Page first
-//		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");
-//		SettingPage.click();
-//		Thread.sleep(1000);
-//		// The in those default setting, except from Google Analytics, all other is from
-//		// Customize page
-//		// To do customize page first, navigate to customize page
-//		Locator Customize = page.locator("//*[@id='root']/div/div[2]/div/ul/div[6]");
-//		Customize.click();
-//		Thread.sleep(1000);
-//
-//		// This will set those setting in customize page
-//		CustomizeSetting();
-//
-//		// To close the Customize page
-//		page.press("body", "Escape");
-//		Thread.sleep(1000);
-//
-//		// Then for Google Analytics
-//		Locator GoogleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
-//		GoogleAnalytics.click();
-//		updateSetting(GoogleAnalytics, "Settings.Google Analytics");
+		// Navigate to Setting Page
+		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
+		Thread.sleep(1000);
 
-		// After that we will try Saved Stops
-		// Therefore, we go to Search page
+		// Navigate to Customize page and customize settings
+		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[6]").click();
+		Thread.sleep(1000);
+		CustomizeSetting();
+		page.press("body", "Escape");
+
+		// Update Google Analytics settings
+		Locator googleAnalytics = page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[10]");
+		googleAnalytics.click();
+		updateSetting(googleAnalytics, "Settings.Google Analytics");
+
+		// Navigate to Search page
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
 		Thread.sleep(1000);
 
-		// Then we go to all page
+		// Go to All page
 		page.locator("(//button[@role='tab'])[2]").click();
 		Thread.sleep(1000);
 
-		Locator AllRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
-		int AllButtonCount = AllRoute.locator("button").count();
+		// Perform actions on the first route
+		handleFirstRoute();
 
-		// The find the button "that shown in the screen"
-		Locator RouteButtonLocator = AllRoute.locator("button");
+		// Store ETAs
+		storeItemInJson(page.locator("//*[@id=\"root\"]/div/div[2]/div/div[2]/div"), "Saved Etas");
 
-		// For testing, we only check the first route
-		RouteButtonLocator.nth(0).click();
+		// Store Home Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
 
+		// Store Work Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+
+		// Store New Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+
+		// Save Stops
+		saveStopsInJson();
+
+	}
+
+	private void handleFirstRoute() throws Exception {
+		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
+		Locator routeButtonLocator = allRoute.locator("button");
+		routeButtonLocator.nth(0).click();
 		Thread.sleep(1000);
-		// locate all stop and find all button inside
-		Locator AllStop = page.locator("//*[@id=\"root\"]/div/div[2]/div[3]");
-		Locator AllStopButton = AllStop.locator("role=button");
 
-		// And find the number of button
-		int AllStopButtonCount = AllStopButton.count();
+		Locator allStop = page.locator("//*[@id=\"root\"]/div/div[2]/div[3]");
+		Locator allStopButton = allStop.locator("role=button");
+		int allStopButtonCount = allStopButton.count();
 
-		// For the first button, we do it outside the for loop
-		AllStopButton.nth(0).click();
-		// Thread.sleep(1000);
-
-		// access the item with full xpath
+		// Interact with the first button
+		allStopButton.nth(0).click();
+		Thread.sleep(1000);
 		page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
 		page.press("body", "Escape");
 
-		AllStopButton.nth(3).click();
-		// Thread.sleep(1000);
+		for (int i = 3; i < allStopButtonCount; i++) {
+			allStopButton.nth(i).dblclick();
+			Thread.sleep(1000);
+			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
+			page.press("body", "Escape");
 
-		// press add button to add a new collection
-		page.locator("//h6[text()='Collections']/following-sibling::button");
-		// Thread.sleep(1000);
+			allStopButton.nth(i).click();
+			page.locator("//h6[text()='Collections']/following-sibling::button").click();
+			addToAllCollections();
+		}
+	}
 
-		// This is to add new collection
-		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
-		page.press("body", "Escape");
+	private void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
+		locator.click();
+		Thread.sleep(1000);
 
-		// To add to all collection
+		Locator storedETAs = locator.locator("(//ul[@class='MuiList-root hkbus-1abambu']//li)");
+		for (int i = 0; i < storedETAs.count(); i++) {
+			String route = storedETAs.nth(i).locator("h2 > span").nth(0).innerText() + " ";
+			String bus = storedETAs.nth(i).locator("h4").nth(0).innerText() + " ";
+			String destination = storedETAs.nth(i).locator("h3 > b").innerText() + " ";
+			String stops = storedETAs.nth(i).locator(".MuiListItemText-secondary").innerText() + " ";
+
+			WriteJson.updateJsonFile(keyPrefix, route + bus + destination + stops);
+		}
+	}
+
+	private void saveStopsInJson() throws Exception {
+		page.locator("//*[@id=\"root\"]/div/div[3]/a[2]").click();
+		Thread.sleep(1000);
+		Locator stopsNamesButtons = page.locator("//*[@id=\"root\"]/div/div[2]/div/div[1]").locator("button");
+
+		for (int i = 0; i < stopsNamesButtons.count(); i++) {
+			WriteJson.updateJsonFile("Saved Stops", stopsNamesButtons.nth(i).innerText());
+		}
+	}
+
+	private void addToAllCollections() throws Exception {
 		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
 		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
 		page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
 		page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
 		page.press("body", "Escape");
-
-		for (int i = 0; i < AllStopButtonCount - 4; i++) {
-			// For the first button, we do it outside the for loop
-			AllStopButton.nth(i + 4).dblclick();
-			// Thread.sleep(1000);
-			AllStopButton = AllStop.locator("role=button");
-
-			// access the item with full xpath
-			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
-			page.press("body", "Escape");
-
-			// the button is offset by 1
-			AllStopButton.nth(i + 4).click();
-			// Thread.sleep(1000);
-
-			// press add button to add a new collection
-			page.locator("//h6[text()='Collections']/following-sibling::button");
-			// Thread.sleep(1000);
-
-			// To add to all collection
-			page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
-			page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
-			page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
-			page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
-			page.press("body", "Escape");
-		}
-
-		// IN THIS STEP, I HAVE DONE THE ADDING
-
 	}
 
 	private void CustomizeSetting() throws Exception {
@@ -181,11 +179,13 @@ public class ExportandImportCheck extends BaseTest {
 		updateSetting(appearance, "Settings.Appearance");
 
 		// Power Saving Mode
-		Locator powerSavingMode = page.locator("//html/body/div[3]/div[3]/div/ul/div[6]");
-		updateSetting(powerSavingMode, "Settings.Power Saving Mode");
+		// Locator powerSavingMode =
+		// page.locator("//html/body/div[3]/div[3]/div/ul/div[10]");
+		// updateSetting(powerSavingMode, "Settings.Power Saving Mode");
+		// No need to change power saving mode for convenience latter implementation
 
 		// Platform Display Format
-		Locator platformDisplayFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[7]");
+		Locator platformDisplayFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[9]");
 		updateSetting(platformDisplayFormat, "Settings.Platform Display Format");
 
 		// Refresh Interval
@@ -201,11 +201,11 @@ public class ExportandImportCheck extends BaseTest {
 		updateSetting(vibration, "Settings.Vibration");
 
 		// ETA Format
-		Locator etaFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[9]"); // Updated index if necessary
+		Locator etaFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[7]"); // Updated index if necessary
 		updateSetting(etaFormat, "Settings.Eta Format");
 
 		// Keyboard Layout
-		Locator keyboardLayout = page.locator("//html/body/div[3]/div[3]/div/ul/div[10]"); // Updated index if necessary
+		Locator keyboardLayout = page.locator("//html/body/div[3]/div[3]/div/ul/div[6]"); // Updated index if necessary
 		updateSetting(keyboardLayout, "Settings.Keyboard Layout");
 
 		// Route Filtering
