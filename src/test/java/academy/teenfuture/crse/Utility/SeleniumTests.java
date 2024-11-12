@@ -105,16 +105,12 @@ public class SeleniumTests {
 		driver.close();
 	}
 
-<<<<<<< HEAD
-	public void testing(){
 		
-=======
 	@Disabled
 	@Test
 	public void getStart_Safari() {
 		WebDriver driver = new SafariDriver();
 		driver.get("https://www.google.com.hk");
 		driver.close();
->>>>>>> 54498484cf88145cc4e58fe21ffdbaac0957ee7d
 	}
 }
