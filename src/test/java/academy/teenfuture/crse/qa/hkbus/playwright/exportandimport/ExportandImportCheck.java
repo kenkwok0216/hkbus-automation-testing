@@ -69,20 +69,20 @@ public class ExportandImportCheck extends BaseTest {
 	@Order(1)
 	public void normalTest() throws Exception {
 
-//		// Navigate to Setting Page
-//		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
-//		Thread.sleep(1000);
-//
-//		// Navigate to Customize page and customize settings
-//		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[6]").click();
-//		Thread.sleep(1000);
-//		CustomizeSetting();
-//		page.press("body", "Escape");
-//
-//		// Update Google Analytics settings
-//		Locator googleAnalytics = page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[10]");
-//		googleAnalytics.click();
-//		updateSetting(googleAnalytics, "Settings.Google Analytics");
+		// Navigate to Setting Page
+		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
+		Thread.sleep(1000);
+
+		// Navigate to Customize page and customize settings
+		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
+		Thread.sleep(1000);
+		CustomizeSetting();
+		page.press("body", "Escape");
+
+		// Update Google Analytics settings
+		Locator googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
+		googleAnalytics.click();
+		updateSetting(googleAnalytics, "Settings.Google Analytics");
 
 		// Navigate to Search page
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
@@ -93,7 +93,10 @@ public class ExportandImportCheck extends BaseTest {
 		Thread.sleep(1000);
 
 		// Perform actions on the first route
-		handleFirstRoute();
+		handleRouteStore();
+
+		// Navigate to Home Page
+		page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
 
 		// Store ETAs
 		storeItemInJson(page.locator("//*[@id=\"root\"]/div/div[2]/div/div[2]/div"), "Saved Etas");
@@ -112,7 +115,7 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
-	private void handleFirstRoute() throws Exception {
+	private void handleRouteStore() throws Exception {
 		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
 		Locator routeButtonLocator = allRoute.locator("button");
 		routeButtonLocator.nth(0).click();
@@ -150,9 +153,9 @@ public class ExportandImportCheck extends BaseTest {
 			// access the bookmarked with full xpath
 			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
 			page.press("body", "Escape");
-			
+
 			allStopButton.nth(i).click();
-			//page.locator("//h6[text()='Collections']/following-sibling::button").click();
+			// page.locator("//h6[text()='Collections']/following-sibling::button").click();
 			addToAllCollections();
 		}
 	}
