@@ -69,20 +69,20 @@ public class ExportandImportCheck extends BaseTest {
 	@Order(1)
 	public void normalTest() throws Exception {
 
-		// Navigate to Setting Page
-		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
-		Thread.sleep(1000);
-
-		// Navigate to Customize page and customize settings
-		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[6]").click();
-		Thread.sleep(1000);
-		CustomizeSetting();
-		page.press("body", "Escape");
-
-		// Update Google Analytics settings
-		Locator googleAnalytics = page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[10]");
-		googleAnalytics.click();
-		updateSetting(googleAnalytics, "Settings.Google Analytics");
+//		// Navigate to Setting Page
+//		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
+//		Thread.sleep(1000);
+//
+//		// Navigate to Customize page and customize settings
+//		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[6]").click();
+//		Thread.sleep(1000);
+//		CustomizeSetting();
+//		page.press("body", "Escape");
+//
+//		// Update Google Analytics settings
+//		Locator googleAnalytics = page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//div[10]");
+//		googleAnalytics.click();
+//		updateSetting(googleAnalytics, "Settings.Google Analytics");
 
 		// Navigate to Search page
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
@@ -128,14 +128,31 @@ public class ExportandImportCheck extends BaseTest {
 		page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
 		page.press("body", "Escape");
 
-		for (int i = 3; i < allStopButtonCount; i++) {
+		allStopButton.nth(3).click();
+
+		// press add button to add a new collection
+		page.locator("//h6[text()='Collections']/following-sibling::button");
+		// Thread.sleep(1000);
+		// This is to add new collection
+		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
+		page.press("body", "Escape");
+		// To add to all collection
+		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
+		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
+		page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
+		page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
+		page.press("body", "Escape");
+
+		for (int i = 4; i < allStopButtonCount; i++) {
 			allStopButton.nth(i).dblclick();
-			Thread.sleep(1000);
+			// Thread.sleep(1000);
+			allStopButton = allStop.locator("role=button");
+			// access the bookmarked with full xpath
 			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
 			page.press("body", "Escape");
-
+			
 			allStopButton.nth(i).click();
-			page.locator("//h6[text()='Collections']/following-sibling::button").click();
+			//page.locator("//h6[text()='Collections']/following-sibling::button").click();
 			addToAllCollections();
 		}
 	}
