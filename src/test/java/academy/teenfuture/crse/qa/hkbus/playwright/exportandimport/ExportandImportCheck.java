@@ -74,59 +74,60 @@ public class ExportandImportCheck extends BaseTest {
 	@Order(1)
 	public void normalTest() throws Exception {
 		String testName = "Normal test on data export and import";
+		boolean error = false;
 
-//		// Navigate to Setting Page
-//		GoToSetting();
-//
-//		// Navigate to Customize page and customize settings
-//		GoToCustomize();
-//		CustomizeSetting();
-//		page.press("body", "Escape");
-//
-//		// Update Google Analytics settings
-//		Locator googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
-//		googleAnalytics.click();
-//		updateSetting(googleAnalytics, "Settings.Google Analytics");
-//
-//		// Navigate to Search page
-//		GoToSearchPage();
-//
-//		// Go to All tab
-//		GoToAllTab();
-//
-//		// Perform actions on the first route
-//		handleRouteStore();
-//
-//		// Navigate to Home Page
-//		GoToHomePage();
-//
-//		// Store ETAs (Star)
-//		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
-//
-//		// Store Home Collections
-//		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
-//
-//		// Store Work Collections
-//		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
-//
-//		// Store New Collections
-//		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
-//
-//		// Save Stops
-//		saveStopsInJson();
-//
-//		Thread.sleep(1000);
-//
-//		// Then, we can go back to setting
-//		GoToSetting();
-//
-//		// Then go to Data Export and copy the links
-//		String URL = CopyExportLink();
-//
-//		WriteJson.updateJsonFile("Export URL", URL);
-//
-//		// The the step is to clear user history
-//		ClearUserRecord();
+		// Navigate to Setting Page
+		GoToSetting();
+
+		// Navigate to Customize page and customize settings
+		GoToCustomize();
+		CustomizeSetting();
+		page.press("body", "Escape");
+
+		// Update Google Analytics settings
+		Locator googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
+		googleAnalytics.click();
+		updateSetting(googleAnalytics, "Settings.Google Analytics");
+
+		// Navigate to Search page
+		GoToSearchPage();
+
+		// Go to All tab
+		GoToAllTab();
+
+		// Perform actions on the first route
+		handleRouteStore();
+
+		// Navigate to Home Page
+		GoToHomePage();
+
+		// Store ETAs (Star)
+		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+
+		// Store Home Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+
+		// Store Work Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+
+		// Store New Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+
+		// Save Stops
+		saveStopsInJson();
+
+		Thread.sleep(1000);
+
+		// Then, we can go back to setting
+		GoToSetting();
+
+		// Then go to Data Export and copy the links
+		String URL = CopyExportLink();
+
+		WriteJson.updateJsonFile("Export URL", URL);
+
+		// The the step is to clear user history
+		ClearUserRecord();
 
 		// At time point, data is set
 		// Import the data
@@ -136,6 +137,7 @@ public class ExportandImportCheck extends BaseTest {
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			error = true;
 			super.generateExtentTest(testName, false,
 					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
 			Path sourcePath = Paths.get(System.getProperty("user.dir")
@@ -171,6 +173,7 @@ public class ExportandImportCheck extends BaseTest {
 				throw new Exception("There are error in Export and Import function");
 			}
 		} catch (Exception e) {
+			error = true;
 			System.out.println(e.getMessage());
 			super.generateExtentTest(testName, false,
 					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
@@ -186,6 +189,46 @@ public class ExportandImportCheck extends BaseTest {
 				System.err.println("Error occurred while copying the file: " + e1.getMessage());
 			}
 
+		}
+
+		// Then, we go to Setting page to check
+		GoToSetting();
+
+		googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
+
+		boolean testSetting1 = checkSetting(googleAnalytics, "Settings.Google Analytics");
+
+		// Then check value in customize
+		GoToCustomize();
+
+		boolean testSetting2 = CustomizeSettingCheck();
+
+		try {
+			// if there are somethings is false
+			if (!(testSetting1 && testSetting2)) {
+				throw new Exception("There are error in Export and Import function");
+			}
+		} catch (Exception e) {
+			error = true;
+			System.out.println(e.getMessage());
+			super.generateExtentTest(testName, false,
+					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
+			Path sourcePath = Paths.get(System.getProperty("user.dir")
+					+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+			Path destinationPath = Paths.get(System.getProperty("user.dir") + "/exportandimporterror/error.json");
+
+			try {
+				// Copy the file
+				Files.copy(sourcePath, destinationPath);
+				System.out.println("File copied successfully!");
+			} catch (IOException e1) {
+				System.err.println("Error occurred while copying the file: " + e1.getMessage());
+			}
+
+		}
+
+		if (!error) {
+			super.generateExtentTest(testName, true, "This test case is passed");
 		}
 
 	}
@@ -460,6 +503,51 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	private boolean CustomizeSettingCheck() throws Exception {
+		// Appearance
+		Locator appearance = page.locator("//html/body/div[3]/div[3]/div/ul/div[5]");
+		boolean test1 = checkSetting(appearance, "Settings.Appearance");
+
+		// Power Saving Mode
+		Locator powerSavingMode = page.locator("//html/body/div[3]/div[3]/div/ul/div[10]");
+		boolean test2 = checkSetting(powerSavingMode, "Settings.Power Saving Mode");
+
+		// Platform Display Format
+		Locator platformDisplayFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[9]");
+		boolean test3 = checkSetting(platformDisplayFormat, "Settings.Platform Display Format");
+
+		// Refresh Interval
+		Locator refreshInterval = page.locator("//html/body/div[3]/div[3]/div/ul/div[4]/div[2]/p/span");
+		boolean test4 = checkRefreshInterval(refreshInterval, "Settings.Refresh Interval");
+
+		// Annotate Scheduled Bus
+		Locator annotateScheduledBus = page.locator("//html/body/div[3]/div[3]/div/ul/div[8]");
+		boolean test5 = checkSetting(annotateScheduledBus, "Settings.Annotate Scheduled Bus");
+
+		// Vibration
+		Locator vibration = page.locator("//html/body/div[3]/div[3]/div/ul/div[12]");
+		boolean test6 = checkSetting(vibration, "Settings.Vibration");
+
+		// ETA Format
+		Locator etaFormat = page.locator("//html/body/div[3]/div[3]/div/ul/div[7]"); // Updated index if necessary
+		boolean test7 = checkSetting(etaFormat, "Settings.Eta Format");
+
+		// Keyboard Layout
+		Locator keyboardLayout = page.locator("//html/body/div[3]/div[3]/div/ul/div[6]"); // Updated index if necessary
+		boolean test8 = checkSetting(keyboardLayout, "Settings.Keyboard Layout");
+
+		// Route Filtering
+		Locator routeFiltering = page.locator("//html/body/div[3]/div[3]/div/ul/div[2]");
+		boolean test9 = checkSetting(routeFiltering, "Settings.Route Filtering");
+
+		// Bus Sort Order
+		Locator busSortOrder = page.locator("//html/body/div[3]/div[3]/div/ul/div[3]");
+		boolean test10 = checkSetting(busSortOrder, "Settings.Bus Sort Order");
+
+		return (test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10);
+
+	}
+
 	// Method to handle clicking and updating settings, which only press is okay
 	private static void updateSetting(Locator locator, String keyPath) throws Exception {
 		// Click the setting
@@ -469,6 +557,19 @@ public class ExportandImportCheck extends BaseTest {
 		System.out.println(value);
 		// Update the JSON file with the new value
 		WriteJson.updateJsonFile(keyPath, value); // Change to false if using save.json
+	}
+
+	// Method to handle checking settings, which only press is okay
+	private static boolean checkSetting(Locator locator, String keyPath) throws Exception {
+		String value = locator.locator("p").innerText().trim();
+		System.out.println("Get:" + value);
+
+		String setting = (String) ReadJson.readJsonFile(keyPath, false);
+		System.out.println("Saved: " + setting);
+
+		System.out.println(keyPath + " : " + value.equals(setting));
+		return (value.equals(setting));
+
 	}
 
 	// Special method for Refresh Interval that includes key presses
@@ -484,6 +585,21 @@ public class ExportandImportCheck extends BaseTest {
 		System.out.println(value);
 		// Update the JSON file with the new value
 		WriteJson.updateJsonFile(keyPath, value); // Change to false if using save.json
+	}
+
+	// Special method for Refresh Interval that includes key presses
+	private static boolean checkRefreshInterval(Locator locator, String keyPath) throws Exception {
+		// Click the setting
+		// locator.click();
+		// Get the updated inner text
+		String value = locator.innerText().trim();
+		System.out.println("Get:" + value);
+
+		String setting = (String) ReadJson.readJsonFile(keyPath, false);
+		System.out.println("Saved: " + setting);
+
+		System.out.println(keyPath + " : " + value.equals(setting));
+		return (value.equals(setting));
 	}
 
 	@AfterEach

@@ -3,6 +3,8 @@ package academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ReadJson {
@@ -10,25 +12,58 @@ public class ReadJson {
 			+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/";
 
 	public static Object readJsonFile(String key, boolean isDefault) throws Exception {
-		filePath = System.getProperty("user.dir")
+		// Build the file path based on whether the default or saved JSON file is
+		// requested
+		String filePath = System.getProperty("user.dir")
 				+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/";
-		if (isDefault) {
-			filePath = filePath.concat("default.json");
-		} else {
-			filePath = filePath.concat("saved.json");
-		}
+		// Append the appropriate filename to the file path
+		filePath = isDefault ? filePath.concat("default.json") : filePath.concat("saved.json");
 
-		// Read the content of the JSON file
+		// Read the content of the specified JSON file into a String
 		String content = new String(Files.readAllBytes(Paths.get(filePath)));
+
+		// Parse the content string into a JSONObject for manipulation
 		JSONObject jsonObject = new JSONObject(content);
 
-		// Determine if the key should be treated as an array or a single value
-		if (shouldBeArray(key)) {
-			return jsonObject.getJSONArray(key);
-		} else {
-			return jsonObject.getString(key);
-		}
+		// Split the key by dot (.) to handle nested keys (e.g., "Settings.Google
+		// Analytics")
+		String[] keys = key.split("\\.");
+		JSONObject currentObject = jsonObject; // Start with the root JSONObject
 
+		// Iterate over each key in the split key array
+		for (int i = 0; i < keys.length; i++) {
+			String currentKey = keys[i]; // Get the current key to process
+
+			// Check if we're at the last key in the hierarchy
+			if (i == keys.length - 1) {
+				// If it's the last key, we attempt to retrieve the value
+				if (currentObject.has(currentKey)) {
+					// Check if the value is a JSONArray or a String
+					if (currentObject.get(currentKey) instanceof JSONArray) {
+						// Return the JSONArray if the value is one
+						return currentObject.getJSONArray(currentKey);
+					} else {
+						// Otherwise, return the String value
+						return currentObject.getString(currentKey);
+					}
+				} else {
+					// If the key does not exist, throw an exception with a descriptive message
+					throw new JSONException("No value found for key: " + key);
+				}
+			} else {
+				// If it's not the last key, we check if the current key exists in the current
+				// JSONObject
+				if (currentObject.has(currentKey)) {
+					// Move deeper into the JSON structure by updating currentObject to the next
+					// nested JSONObject
+					currentObject = currentObject.getJSONObject(currentKey);
+				} else {
+					// If the key does not exist, throw an exception indicating the missing object
+					throw new JSONException("No object found for key: " + currentKey);
+				}
+			}
+		}
+		return null; // Fallback return (this should never be reached)
 	}
 
 	// Method to determine if a key should be treated as a single value
