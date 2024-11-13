@@ -9,28 +9,40 @@ public class ReadJson {
 	static String filePath = System.getProperty("user.dir")
 			+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/";
 
-	public static String readJsonFile(String key, boolean isDefault) throws Exception {
+	public static Object readJsonFile(String key, boolean isDefault) throws Exception {
+		filePath = System.getProperty("user.dir")
+				+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/";
 		if (isDefault) {
-			filePath.concat("default.json");
-
-			// Read the content of the JSON file
-			String content = new String(Files.readAllBytes(Paths.get(filePath)));
-
-			// Parse the JSON content
-			JSONObject jsonObject = new JSONObject(content);
-
-			return jsonObject.getString(key);
-
+			filePath = filePath.concat("default.json");
 		} else {
-			filePath.concat("save.json");
-			// Read the content of the JSON file
-			String content = new String(Files.readAllBytes(Paths.get(filePath)));
+			filePath = filePath.concat("saved.json");
+		}
 
-			// Parse the JSON content
-			JSONObject jsonObject = new JSONObject(content);
+		// Read the content of the JSON file
+		String content = new String(Files.readAllBytes(Paths.get(filePath)));
+		JSONObject jsonObject = new JSONObject(content);
 
+		// Determine if the key should be treated as an array or a single value
+		if (shouldBeArray(key)) {
+			return jsonObject.getJSONArray(key);
+		} else {
 			return jsonObject.getString(key);
 		}
 
+	}
+
+	// Method to determine if a key should be treated as a single value
+	private static boolean shouldBeArray(String key) {
+		// Define which keys should hold single values
+		String[] singleValueKeys = { "Appearance", "Power Saving Mode", "Platform Display Format", "Refresh Interval",
+				"Annotate Scheduled Bus", "Vibration", "Eta Format", "Keyboard Layout", "Route Filtering",
+				"Bus Sort Order", "Google Analytics", "Export URL" };
+
+		for (String singleValueKey : singleValueKeys) {
+			if (singleValueKey.equals(key)) {
+				return false; // This key should be treated as a single value
+			}
+		}
+		return true; // This key should be treated as an array
 	}
 }

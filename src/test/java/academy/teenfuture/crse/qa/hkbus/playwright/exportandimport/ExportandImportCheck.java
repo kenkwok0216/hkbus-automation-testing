@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.json.JSONArray;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +19,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import com.microsoft.playwright.Locator;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
+import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.ReadJson;
 import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJson;
 
 // We will try the import and export functions
@@ -66,52 +70,201 @@ public class ExportandImportCheck extends BaseTest {
 
 	// This test will try the handle data import and export in a "normal" way
 	@Test
+	// @Disabled
 	@Order(1)
 	public void normalTest() throws Exception {
+		String testName = "Normal test on data export and import";
 
-		// Navigate to Setting Page
+//		// Navigate to Setting Page
+//		GoToSetting();
+//
+//		// Navigate to Customize page and customize settings
+//		GoToCustomize();
+//		CustomizeSetting();
+//		page.press("body", "Escape");
+//
+//		// Update Google Analytics settings
+//		Locator googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
+//		googleAnalytics.click();
+//		updateSetting(googleAnalytics, "Settings.Google Analytics");
+//
+//		// Navigate to Search page
+//		GoToSearchPage();
+//
+//		// Go to All tab
+//		GoToAllTab();
+//
+//		// Perform actions on the first route
+//		handleRouteStore();
+//
+//		// Navigate to Home Page
+//		GoToHomePage();
+//
+//		// Store ETAs (Star)
+//		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+//
+//		// Store Home Collections
+//		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+//
+//		// Store Work Collections
+//		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+//
+//		// Store New Collections
+//		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+//
+//		// Save Stops
+//		saveStopsInJson();
+//
+//		Thread.sleep(1000);
+//
+//		// Then, we can go back to setting
+//		GoToSetting();
+//
+//		// Then go to Data Export and copy the links
+//		String URL = CopyExportLink();
+//
+//		WriteJson.updateJsonFile("Export URL", URL);
+//
+//		// The the step is to clear user history
+//		ClearUserRecord();
+
+		// At time point, data is set
+		// Import the data
+		try {
+
+			ImportStoreData();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			super.generateExtentTest(testName, false,
+					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
+			Path sourcePath = Paths.get(System.getProperty("user.dir")
+					+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+			Path destinationPath = Paths.get(System.getProperty("user.dir") + "/exportandimporterror/error.json");
+
+			try {
+				// Copy the file
+				Files.copy(sourcePath, destinationPath);
+				System.out.println("File copied successfully!");
+			} catch (IOException e1) {
+				System.err.println("Error occurred while copying the file: " + e1.getMessage());
+			}
+		}
+
+		// Then we will start the Checking of data
+		GoToHomePage();
+
+		// Check (Star)
+		boolean testETAs = CompareItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+		// Check Home Collections
+		boolean testHome = CompareItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+		// Check Collection Work
+		boolean testWork = CompareItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+		// Check Collection New
+		boolean testNew = CompareItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+		// Check Stops
+		boolean testStops = CompareStopsInJson();
+
+		try {
+			// if there are somethings is false
+			if (!(testETAs && testHome && testWork && testNew && testStops)) {
+				throw new Exception("There are error in Export and Import function");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			super.generateExtentTest(testName, false,
+					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
+			Path sourcePath = Paths.get(System.getProperty("user.dir")
+					+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+			Path destinationPath = Paths.get(System.getProperty("user.dir") + "/exportandimporterror/error.json");
+
+			try {
+				// Copy the file
+				Files.copy(sourcePath, destinationPath);
+				System.out.println("File copied successfully!");
+			} catch (IOException e1) {
+				System.err.println("Error occurred while copying the file: " + e1.getMessage());
+			}
+
+		}
+
+	}
+
+	private void ImportStoreData() throws InterruptedException, Exception {
+
+		GoToSetting();
+		// Click Data Import
+		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[8]").click();
+		Locator inputField = page.locator("//input[@aria-invalid='false']");
+		String exportUrl = (String) ReadJson.readJsonFile("Export URL", false);
+
+		// This is to "activate" the accept button
+		String lastChar = exportUrl.substring(exportUrl.length() - 1);
+		String inputToFill = exportUrl.substring(0, exportUrl.length() - 1);
+		inputField.focus();
+		inputField.fill(inputToFill);
+		Thread.sleep(500);
+		inputField.press(lastChar);
+
+		Locator acceptButtton = page.locator("(//button[@type='button'])[3]");
+		if (acceptButtton.isDisabled()) {
+			throw new Exception("The URL produced is incorrect");
+		} else {
+			acceptButtton.click();
+		}
+
+	}
+
+	private void GoToSetting() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
 		Thread.sleep(1000);
+	}
 
-		// Navigate to Customize page and customize settings
+	private void GoToCustomize() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
 		Thread.sleep(1000);
-		CustomizeSetting();
-		page.press("body", "Escape");
+	}
 
-		// Update Google Analytics settings
-		Locator googleAnalytics = page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[10]");
-		googleAnalytics.click();
-		updateSetting(googleAnalytics, "Settings.Google Analytics");
-
-		// Navigate to Search page
+	private void GoToSearchPage() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
 		Thread.sleep(1000);
+	}
 
-		// Go to All page
+	private void GoToAllTab() throws InterruptedException {
 		page.locator("(//button[@role='tab'])[2]").click();
 		Thread.sleep(1000);
+	}
 
-		// Perform actions on the first route
-		handleRouteStore();
-
+	private void GoToHomePage() throws InterruptedException {
 		// Navigate to Home Page
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
+		Thread.sleep(1000);
+	}
 
-		// Store ETAs
-		storeItemInJson(page.locator("//*[@id=\"root\"]/div/div[2]/div/div[2]/div"), "Saved Etas");
+	private String CopyExportLink() throws InterruptedException {
+		// Navigate to Home Page
+		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[7]").click();
+		Thread.sleep(1000);
+		String URL = page.locator("//div[contains(@class,'MuiInputBase-root MuiOutlinedInput-root')]//input[1]")
+				.getAttribute("value");
+		return URL;
+	}
 
-		// Store Home Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+	private void ClearUserRecord() throws InterruptedException {
+		GoToSetting();
+		GoToCustomize();
 
-		// Store Work Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+		// To click accept for confirm delete
+		page.onceDialog(dialog -> {
+			dialog.accept();
+		});
 
-		// Store New Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
-
-		// Save Stops
-		saveStopsInJson();
+		// Clear usage record here
+		page.locator("//html/body/div[3]/div[3]/div/ul/div[13]").click();
+		page.press("body", "Escape");
+		// Refresh the page to reload all the time (i.e. clear cache)
+		page.reload();
+		Thread.sleep(1000);
 
 	}
 
@@ -166,13 +319,52 @@ public class ExportandImportCheck extends BaseTest {
 
 		Locator storedETAs = locator.locator("(//ul[@class='MuiList-root hkbus-1abambu']//li)");
 		for (int i = 0; i < storedETAs.count(); i++) {
-			String route = storedETAs.nth(i).locator("h2 > span").nth(0).innerText() + " ";
-			String bus = storedETAs.nth(i).locator("h4").nth(0).innerText() + " ";
-			String destination = storedETAs.nth(i).locator("h3 > b").innerText() + " ";
-			String stops = storedETAs.nth(i).locator(".MuiListItemText-secondary").innerText() + " ";
+			String route = storedETAs.nth(i).locator("h2 > span").nth(0).innerText().trim() + " ";
+			String bus = storedETAs.nth(i).locator("h4").nth(0).innerText().trim() + " ";
+			String destination = storedETAs.nth(i).locator("h3 > b").innerText().trim() + " ";
+			String stops = storedETAs.nth(i).locator(".MuiListItemText-secondary").innerText().trim();
 
 			WriteJson.updateJsonFile(keyPrefix, route + bus + destination + stops);
 		}
+	}
+
+	private boolean CompareItemInJson(Locator locator, String keyPrefix) throws Exception {
+		locator.click();
+		Thread.sleep(1000);
+
+		Locator stored = locator.locator("(//ul[@class='MuiList-root hkbus-1abambu']//li)");
+
+		// Read stored data from JSON and convert it to a List
+		Object storedDataJson = ReadJson.readJsonFile(keyPrefix, false);
+		JSONArray storedDataArray = (JSONArray) storedDataJson;
+
+		// Create a Set to hold the JSON data for fast lookup
+		Set<String> jsonSet = new HashSet<>();
+
+		for (int j = 0; j < storedDataArray.length(); j++) {
+			jsonSet.add(storedDataArray.getString(j).trim());
+		}
+
+		// Collect data from the UI elements
+		for (int i = 0; i < stored.count(); i++) {
+			String route = stored.nth(i).locator("h2 > span").nth(0).innerText().trim();
+			String bus = stored.nth(i).locator("h4").nth(0).innerText().trim();
+			String destination = stored.nth(i).locator("h3 > b").innerText().trim();
+			String stops = stored.nth(i).locator(".MuiListItemText-secondary").innerText().trim();
+
+			String getData = route + " " + bus + " " + destination + " " + stops;
+
+			// Check if the collected UI data exists in the JSON data
+			if (jsonSet.contains(getData)) {
+				jsonSet.remove(getData); // Optional: Remove if you want to check for uniqueness
+				System.out.println(jsonSet.toString());
+			}
+
+		}
+
+		// If no unmatched data remains, return true
+		return jsonSet.isEmpty();
+
 	}
 
 	private void saveStopsInJson() throws Exception {
@@ -181,8 +373,38 @@ public class ExportandImportCheck extends BaseTest {
 		Locator stopsNamesButtons = page.locator("//*[@id=\"root\"]/div/div[2]/div/div[1]").locator("button");
 
 		for (int i = 0; i < stopsNamesButtons.count(); i++) {
-			WriteJson.updateJsonFile("Saved Stops", stopsNamesButtons.nth(i).innerText());
+			WriteJson.updateJsonFile("Saved Stops", stopsNamesButtons.nth(i).innerText().trim());
 		}
+	}
+
+	private boolean CompareStopsInJson() throws Exception {
+		page.locator("//*[@id=\"root\"]/div/div[3]/a[2]").click();
+		Thread.sleep(1000);
+		Locator stopsNamesButtons = page.locator("//*[@id=\"root\"]/div/div[2]/div/div[1]").locator("button");
+
+		// Read stored data from JSON and convert it to a List
+		Object storedDataJson = ReadJson.readJsonFile("Saved Stops", false);
+		JSONArray storedDataArray = (JSONArray) storedDataJson;
+
+		// Create a Set to hold the JSON data for fast lookup
+		Set<String> jsonSet = new HashSet<>();
+
+		for (int j = 0; j < storedDataArray.length(); j++) {
+			jsonSet.add(storedDataArray.getString(j).trim());
+		}
+
+		for (int i = 0; i < stopsNamesButtons.count(); i++) {
+			String getData = stopsNamesButtons.nth(i).innerText().trim();
+
+			// Check if the collected UI data exists in the JSON data
+			if (jsonSet.contains(getData)) {
+				jsonSet.remove(getData); // Optional: Remove if you want to check for uniqueness
+				System.out.println(jsonSet.toString());
+			}
+		}
+
+		// If no unmatched data remains, return true
+		return jsonSet.isEmpty();
 	}
 
 	private void addToAllCollections() throws Exception {

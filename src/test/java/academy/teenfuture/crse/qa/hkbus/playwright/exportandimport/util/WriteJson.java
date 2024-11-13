@@ -65,7 +65,7 @@ public class WriteJson {
 		// Define which keys should hold single values
 		String[] singleValueKeys = { "Appearance", "Power Saving Mode", "Platform Display Format", "Refresh Interval",
 				"Annotate Scheduled Bus", "Vibration", "Eta Format", "Keyboard Layout", "Route Filtering",
-				"Bus Sort Order", "Google Analytics" };
+				"Bus Sort Order", "Google Analytics", "Export URL" };
 
 		for (String singleValueKey : singleValueKeys) {
 			if (singleValueKey.equals(key)) {
