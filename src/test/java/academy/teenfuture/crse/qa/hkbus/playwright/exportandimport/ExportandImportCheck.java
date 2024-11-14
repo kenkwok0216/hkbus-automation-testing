@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ public class ExportandImportCheck extends BaseTest {
 
 	// This test will try the handle data import and export in a "normal" way
 	@Test
-	// @Disabled
+	@Disabled
 	@Order(1)
 	public void normalTest() throws Exception {
 		String testName = "Normal test on data export and import";
@@ -233,6 +234,20 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	@Test
+	public void abnormalTest() throws Exception {
+
+		// Navigate to Search page
+		GoToSearchPage();
+
+		// Go to All tab
+		GoToAllTab();
+
+		// Perform actions on the first route
+		handleManyRouteStore();
+
+	}
+
 	private void ImportStoreData() throws InterruptedException, Exception {
 
 		GoToSetting();
@@ -354,6 +369,20 @@ public class ExportandImportCheck extends BaseTest {
 			// page.locator("//h6[text()='Collections']/following-sibling::button").click();
 			addToAllCollections();
 		}
+	}
+
+	private void handleManyRouteStore() throws Exception {
+		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
+		Locator routeButtonLocator = allRoute.locator("button");
+		int count = routeButtonLocator.count();
+		System.out.println(count);
+		for (int i = 0; i < count; i++) {
+			routeButtonLocator.nth(i).click();
+			page.goBack();
+			routeButtonLocator.nth(i).scrollIntoViewIfNeeded();
+			System.out.println(i);
+		}
+
 	}
 
 	private void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
