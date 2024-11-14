@@ -54,7 +54,11 @@ public class AddBusRouteTest extends BaseTest {
         SearchPage searchPage = navBar.clickNavSearch();
         Thread.sleep(2000);
 
-        searchPage.clickInAppKeyboardBtns(routeName);
+        searchPage.clickInAppKeyboardBtns(routeName, 1000);
+        // searchPage.clickInAppKeyboardBtn("1");
+        // searchPage.clickInAppKeyboardBtn("0");
+        // searchPage.clickInAppKeyboardBtn("M");
+        Thread.sleep(2000);
 
         // Back to Home page
         HomePage homePage = navBar.clickNavHome();
