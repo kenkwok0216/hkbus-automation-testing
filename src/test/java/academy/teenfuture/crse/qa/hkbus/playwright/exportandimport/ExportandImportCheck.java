@@ -73,7 +73,7 @@ public class ExportandImportCheck extends BaseTest {
 
 	// This test will try the handle data import and export in a "normal" way
 	@Test
-	@Disabled
+	//@Disabled
 	@Order(1)
 	public void normalTest() throws Exception {
 		String testName = "Normal test on data export and import";
