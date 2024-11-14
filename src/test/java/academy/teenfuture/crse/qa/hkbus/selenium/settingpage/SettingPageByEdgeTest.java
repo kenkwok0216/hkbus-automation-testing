@@ -9,9 +9,9 @@ import org.openqa.selenium.WebElement;
  * and tests for the Edge browser.
  * 
  * @author Ken Kwok
- * @see SettingPageCheck
+ * @see SettingPageTest
  */
-public class SettingPageCheckforEdge extends SettingPageCheck {
+public class SettingPageByEdgeTest extends SettingPageTest {
 
 	/**
 	 * Sets up the Edge browser and navigates to the HKBus application before each

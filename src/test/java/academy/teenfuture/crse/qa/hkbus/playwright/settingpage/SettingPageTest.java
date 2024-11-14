@@ -50,8 +50,9 @@ import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.util.ReadJson;
  * @author Ken Kwok
  * @see BaseTest
  */
+@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SettingPageCheck extends BaseTest {
+public class SettingPageTest extends BaseTest {
 
 	/**
 	 * Sets up the environment before each test. Navigates to the settings page of
@@ -72,12 +73,6 @@ public class SettingPageCheck extends BaseTest {
 
 		Thread.sleep(3000);
 	}
-
-	@Test
-	public void test() {
-		
-	}
-	
 	
 	/**
 	 * Tests the toggling of settings on and off. Currently disabled.

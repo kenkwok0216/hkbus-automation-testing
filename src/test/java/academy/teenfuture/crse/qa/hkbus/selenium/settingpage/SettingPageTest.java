@@ -34,7 +34,7 @@ import academy.teenfuture.crse.qa.hkbus.selenium.settingpage.util.ReadJson;
  * @see BaseTest
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SettingPageCheck extends BaseTest {
+public class SettingPageTest extends BaseTest {
 
 	@BeforeEach
 	public void start() throws InterruptedException {

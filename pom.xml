@@ -109,7 +109,7 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>1.47.0</version>
+            <version>1.40.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -189,12 +189,7 @@
             <version>1.1.1</version>
         </dependency>
 
-        <dependency>
-        	<groupId>academy.teenfuture</groupId>
-        	<artifactId>crse</artifactId>
-        	<version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+      </dependencies>
 
     <build>
         <plugins>

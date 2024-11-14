@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.microsoft.playwright.Locator;
 
-public class SettingPageCheckbyChrome extends SettingPageCheck {
+public class SettingPageByWebkitTest extends SettingPageTest {
 
 	/**
 	 * Sets up the environment before each test. Navigates to the settings page of
@@ -16,7 +16,8 @@ public class SettingPageCheckbyChrome extends SettingPageCheck {
 	@BeforeEach
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
-		super.configure("Chrome").navigate("https://hkbus.app/en");
+
+		super.configure("Edge").navigate("https://hkbus.app/en");
 		Thread.sleep(3000);
 		// Locate button to Heart Page and click it
 		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");
