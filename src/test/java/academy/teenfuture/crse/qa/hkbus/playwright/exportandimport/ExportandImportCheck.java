@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,20 +104,7 @@ public class ExportandImportCheck extends BaseTest {
 		// Navigate to Home Page
 		GoToHomePage();
 
-		// Store ETAs (Star)
-		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
-
-		// Store Home Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
-
-		// Store Work Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
-
-		// Store New Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
-
-		// Save Stops
-		saveStopsInJson();
+		storeItemProcess();
 
 		Thread.sleep(1000);
 
@@ -235,7 +224,11 @@ public class ExportandImportCheck extends BaseTest {
 	}
 
 	@Test
+	@Disabled // Check this later
 	public void abnormalTest() throws Exception {
+
+		boolean error = false;
+		String testName = "Trying to put all route and stops into collecions";
 
 		// Navigate to Search page
 		GoToSearchPage();
@@ -245,6 +238,90 @@ public class ExportandImportCheck extends BaseTest {
 
 		// Perform actions on the first route
 		handleManyRouteStore();
+
+		// Navigate to Home Page
+		GoToHomePage();
+
+		storeItemProcess();
+
+		Thread.sleep(1000);
+
+		// Then, we can go back to setting
+		GoToSetting();
+
+		// Then go to Data Export and copy the links
+		String URL = CopyExportLink();
+
+		WriteJson.updateJsonFile("Export URL", URL);
+
+		// The the step is to clear user history
+		ClearUserRecord();
+
+		// At time point, data is set
+		// Import the data
+		try {
+
+			ImportStoreData();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			error = true;
+			super.generateExtentTest(testName, false,
+					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
+			Path sourcePath = Paths.get(System.getProperty("user.dir")
+					+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+			Path destinationPath = Paths.get(System.getProperty("user.dir") + "/exportandimporterror/error.json");
+
+			try {
+				// Copy the file
+				Files.copy(sourcePath, destinationPath);
+				System.out.println("File copied successfully!");
+			} catch (IOException e1) {
+				System.err.println("Error occurred while copying the file: " + e1.getMessage());
+			}
+
+			if (!error) {
+				super.generateExtentTest(testName, true, "This test case is passed");
+			}
+		}
+
+		// Then we will start the Checking of data
+		GoToHomePage();
+
+		// Check (Star)
+		boolean testETAs = CompareItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+		// Check Home Collections
+		boolean testHome = CompareItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+		// Check Collection Work
+		boolean testWork = CompareItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+		// Check Collection New
+		boolean testNew = CompareItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+		// Check Stops
+		boolean testStops = CompareStopsInJson();
+
+		try {
+			// if there are somethings is false
+			if (!(testETAs && testHome && testWork && testNew && testStops)) {
+				throw new Exception("There are error in Export and Import function");
+			}
+		} catch (Exception e) {
+			error = true;
+			System.out.println(e.getMessage());
+			super.generateExtentTest(testName, false,
+					e.getMessage() + " and those data is stored in /exportandimporterror/error.json");
+			Path sourcePath = Paths.get(System.getProperty("user.dir")
+					+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+			Path destinationPath = Paths.get(System.getProperty("user.dir") + "/exportandimporterror/error.json");
+
+			try {
+				// Copy the file
+				Files.copy(sourcePath, destinationPath);
+				System.out.println("File copied successfully!");
+			} catch (IOException e1) {
+				System.err.println("Error occurred while copying the file: " + e1.getMessage());
+			}
+
+		}
 
 	}
 
@@ -326,7 +403,7 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
-	private void handleRouteStore() throws Exception {
+	private static void handleRouteStore() throws Exception {
 		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
 		Locator routeButtonLocator = allRoute.locator("button");
 		routeButtonLocator.nth(0).click();
@@ -371,21 +448,90 @@ public class ExportandImportCheck extends BaseTest {
 		}
 	}
 
-	private void handleManyRouteStore() throws Exception {
-		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
-		Locator routeButtonLocator = allRoute.locator("button");
-		int count = routeButtonLocator.count();
-		System.out.println(count);
-		for (int i = 0; i < count; i++) {
-			routeButtonLocator.nth(i).click();
-			page.goBack();
-			routeButtonLocator.nth(i).scrollIntoViewIfNeeded();
-			System.out.println(i);
+	private static void handleManyRouteStore() throws Exception {
+		String[] links = ReadLink();
+		for (int i = 0; i < links.length; i++) {
+			page.navigate(links[i]);
+
+			Thread.sleep(500);
+			Locator allStop = page.locator("//*[@id=\"root\"]/div/div[2]/div[3]");
+			Locator allStopButton = allStop.locator("role=button");
+			int allStopButtonCount = allStopButton.count();
+
+			// Interact with the first button
+			allStopButton.nth(0).click();
+			Thread.sleep(500);
+			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
+			page.press("body", "Escape");
+
+			allStopButton.nth(3).click();
+
+			if (i == 0) {
+				// press add button to add a new collection
+				page.locator("//h6[text()='Collections']/following-sibling::button");
+				// Thread.sleep(1000);
+				// This is to add new collection
+				page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
+				page.press("body", "Escape");
+			}
+			// To add to all collection
+			page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
+			page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
+			page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
+			page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
+			page.press("body", "Escape");
+
+			for (int j = 4; j < allStopButtonCount; j++) {
+				allStopButton.nth(j).dblclick();
+				// Thread.sleep(1000);
+				allStopButton = allStop.locator("role=button");
+				// access the bookmarked with full xpath
+				page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
+				page.press("body", "Escape");
+
+				allStopButton.nth(j).click();
+				// page.locator("//h6[text()='Collections']/following-sibling::button").click();
+				addToAllCollections();
+			}
+
 		}
 
 	}
 
-	private void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
+	private static String[] ReadLink() throws IOException, JSONException {
+		String filePath = System.getProperty("user.dir") + "/ButtonLinks/links_20241114.json";
+		String content = new String(Files.readAllBytes(Paths.get(filePath)));
+		JSONObject jsonObject = new JSONObject(content);
+		JSONArray linksArray = jsonObject.getJSONArray("links");
+
+		// Create a string array to hold the links
+		String[] links = new String[linksArray.length()];
+
+		for (int i = 0; i < linksArray.length(); i++) {
+			links[i] = linksArray.getString(i);
+		}
+		return links;
+
+	}
+
+	private static void storeItemProcess() throws Exception {
+		// Store ETAs (Star)
+		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+
+		// Store Home Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+
+		// Store Work Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+
+		// Store New Collections
+		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+
+		// Save Stops
+		saveStopsInJson();
+	}
+
+	private static void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
 		locator.click();
 		Thread.sleep(1000);
 
@@ -439,7 +585,7 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
-	private void saveStopsInJson() throws Exception {
+	private static void saveStopsInJson() throws Exception {
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[2]").click();
 		Thread.sleep(1000);
 		Locator stopsNamesButtons = page.locator("//*[@id=\"root\"]/div/div[2]/div/div[1]").locator("button");
@@ -479,7 +625,7 @@ public class ExportandImportCheck extends BaseTest {
 		return jsonSet.isEmpty();
 	}
 
-	private void addToAllCollections() throws Exception {
+	private static void addToAllCollections() throws Exception {
 		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
 		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
 		page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections

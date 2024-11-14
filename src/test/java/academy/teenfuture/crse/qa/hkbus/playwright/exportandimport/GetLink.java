@@ -48,7 +48,7 @@ public class GetLink extends BaseTest {
 
 				// Check if content is not null and not already collected
 				if (content != null && collectedLinks.add(content)) {
-					linksArray.put("https://hkbus.app/" + content); // Add valid link to the JSON array
+					linksArray.put("https://hkbus.app" + content); // Add valid link to the JSON array
 				}
 
 				if (content.equals(targetHref)) {
