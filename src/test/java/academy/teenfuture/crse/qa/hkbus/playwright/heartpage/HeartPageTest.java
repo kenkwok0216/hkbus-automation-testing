@@ -66,7 +66,7 @@ import com.microsoft.playwright.Locator;
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class HeartPageCheck extends BaseTest {
+public class HeartPageTest extends BaseTest {
 
 	/**
 	 * Sets up the test environment before each test. This method navigates to the

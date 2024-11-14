@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import com.microsoft.playwright.Locator;
 
 /**
- * The {@code HearPageCheckforWebkit} class extends the {@link HeartPageCheck}
+ * The {@code HearPageCheckforWebkit} class extends the {@link HeartPageTest}
  * class to provide test functionality specifically for the WebKit browser.
  * 
  * <p>
@@ -30,10 +30,10 @@ import com.microsoft.playwright.Locator;
  * </p>
  * 
  * @author Ken Kwok
- * @see HeartPageCheck
+ * @see HeartPageTest
  */
 
-public class HeartPageCheckforWebkit extends HeartPageCheck {
+public class HeartPageByWebkitTest extends HeartPageTest {
 
 	/**
 	 * Sets up the test environment before each test. This method is overridden to

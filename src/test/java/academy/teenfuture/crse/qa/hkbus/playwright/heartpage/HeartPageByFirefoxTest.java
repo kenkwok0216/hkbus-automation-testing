@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import com.microsoft.playwright.Locator;
 
 /**
- * The {@code HearPageCheckforFirefox} class extends the {@link HeartPageCheck}
+ * The {@code HearPageCheckforFirefox} class extends the {@link HeartPageTest}
  * class to provide test functionality specifically for the Firefox browser.
  * 
  * <p>
@@ -30,9 +30,9 @@ import com.microsoft.playwright.Locator;
  * </p>
  * 
  * @author Ken Kwok
- * @see HeartPageCheck
+ * @see HeartPageTest
  */
-public class HeartPageCheckforFirefox extends HeartPageCheck {
+public class HeartPageByFirefoxTest extends HeartPageTest {
 	/**
 	 * Sets up the test environment before each test. This method is overridden to
 	 * configure Playwright to use the Firefox browser and navigate to the Heart

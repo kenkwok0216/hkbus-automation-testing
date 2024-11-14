@@ -79,7 +79,7 @@ import academy.teenfuture.crse.qa.hkbus.selenium.BaseTest;
  * @author Ken Kwok
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class HeartPageCheck extends BaseTest {
+public class HeartPageTest extends BaseTest {
 	/**
 	 * Sets up the test environment by navigating to the Heart Page of the HKBus
 	 * application. This method is executed before each test.

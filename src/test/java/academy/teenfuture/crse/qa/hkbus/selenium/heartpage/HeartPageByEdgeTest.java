@@ -6,14 +6,15 @@ import org.openqa.selenium.WebElement;
 
 /**
  * This class extends the HeartPageCheck to provide specific configurations and
- * tests for the Chrome browser.
+ * tests for the Edge browser.
  * 
  * @author Ken Kwok
- * @see HeartPageCheck
+ * @see HeartPageTest
  */
-public class HeartPageCheckforChrome extends HeartPageCheck {
+public class HeartPageByEdgeTest extends HeartPageTest {
+
 	/**
-	 * Sets up the Chrome browser and navigates to the HKBus application before each
+	 * Sets up the Edge browser and navigates to the HKBus application before each
 	 * test. It clicks on the Heart Page button after a brief wait.
 	 * 
 	 * @throws InterruptedException if the thread is interrupted while sleeping
@@ -21,7 +22,7 @@ public class HeartPageCheckforChrome extends HeartPageCheck {
 	@BeforeEach
 	@Override
 	public void start() throws InterruptedException {
-		super.configureBrowser("Chrome", true).get("https://hkbus.app/en");
+		super.configureBrowser("Edge", true).get("https://hkbus.app/en");
 		Thread.sleep(1000);
 		WebElement heartPageButton = driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[3]/a[6]"));
 		heartPageButton.click();

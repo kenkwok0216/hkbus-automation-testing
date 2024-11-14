@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import com.microsoft.playwright.Locator;
 
 /**
- * The {@code HearPageCheckforChrome} class extends the {@link HeartPageCheck}
+ * The {@code HearPageCheckforChrome} class extends the {@link HeartPageTest}
  * class to provide test functionality specifically for the Chrome browser.
  * 
  * <p>
@@ -30,9 +30,9 @@ import com.microsoft.playwright.Locator;
  * </p>
  * 
  * @author Ken Kwok
- * @see HeartPageCheck
+ * @see HeartPageTest
  */
-public class HeartPageCheckforChrome extends HeartPageCheck {
+public class HeartPageByChromeTest extends HeartPageTest {
 	/**
 	 * Sets up the test environment before each test. This method is overridden to
 	 * configure Playwright to use the Chrome browser and navigate to the Heart Page
