@@ -39,19 +39,18 @@ public class AddBusRouteTest extends BaseTest {
 
     @Test
     public void addBusRoutesTest() throws InterruptedException {
-        int repeat = 1;
+        int repeat = 2;
         for (int i = 0; i < repeat; i++) {
-            addBusRoute();
+            addBusRoute(busRouteList.get(i).getRoute());
         }
     }
 
-    private void addBusRoute() throws InterruptedException {
-
-        // TODO For testing
-        String routeName = busRouteList.get(2).getRoute();
+    private void addBusRoute(String routeName) throws InterruptedException {
+        SearchPage searchPage;
+        HomePage homePage;
 
         // Go to Search page
-        SearchPage searchPage = navBar.clickNavSearch();
+        searchPage = navBar.clickNavSearch();
         Thread.sleep(2000);
 
         searchPage.clickInAppKeyboardBtns(routeName, 1000);
@@ -61,7 +60,7 @@ public class AddBusRouteTest extends BaseTest {
         Thread.sleep(2000);
 
         // Back to Home page
-        HomePage homePage = navBar.clickNavHome();
+        homePage = navBar.clickNavHome();
         Thread.sleep(2000);
     }
 

@@ -14,7 +14,7 @@ import academy.teenfuture.crse.qa.hkbus.selenium.pojo.BusRoute;
 public class BusRouteDataReader extends AbstractDataReader<BusRoute> {
 
     // Relative path for route list json file
-    private static final String ROUTE_LIST_FILE_PATH = "test-data/bus-route-list/BusRouteList_2024-11-13.json";
+    private static final String ROUTE_LIST_FILE_PATH = "test-data/bus-route-list/KMBBusRouteList_2024-11-13.json";
 
     @Override
     public List<BusRoute> readData() {

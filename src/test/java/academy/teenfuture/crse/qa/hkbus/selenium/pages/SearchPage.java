@@ -93,10 +93,10 @@ public class SearchPage {
 
     }
 
-    public void clickInAppKeyboardBtns(String str, long millis) throws InterruptedException {
+    public void clickInAppKeyboardBtns(String str, long interval) throws InterruptedException {
         for (char c : str.toCharArray()) {
             clickInAppKeyboardBtn(String.valueOf(c));
-            Thread.sleep(millis);
+            Thread.sleep(interval);
         }
     }
 
