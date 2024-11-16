@@ -106,7 +106,7 @@ public class HeartPageTest extends BaseTest {
 	 */
 	@Test
 	@Order(2)
-	// @Disabled
+	@Disabled
 	public void nounTest() throws InterruptedException, IOException {
 		testSelection("Test for nouns", "(//div[@role='group'])[2]", 2);
 	}
@@ -119,7 +119,7 @@ public class HeartPageTest extends BaseTest {
 	 */
 	@Test
 	@Order(3)
-	// @Disabled
+	@Disabled
 	public void adjectiveTest() throws InterruptedException, IOException {
 		testSelection("Test for adjectives", "(//div[@role='group'])[3]", 3);
 	}

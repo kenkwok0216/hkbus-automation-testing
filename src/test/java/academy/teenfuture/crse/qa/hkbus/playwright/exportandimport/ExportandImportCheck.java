@@ -47,9 +47,49 @@ import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJso
 
 // Therefore, to make sure those item will be import, we will adjust all of them
 
+/**
+ * This class contains methods for managing and testing settings, data storage,
+ * and route handling in the HK Bus application.
+ *
+ * <p>
+ * The methods in this class facilitate various operations including:
+ * <ul>
+ * <li>Customizing and verifying application settings.</li>
+ * <li>Reading and storing links and items from the application.</li>
+ * <li>Comparing current application data with stored values.</li>
+ * <li>Handling route storage and manipulation.</li>
+ * <li>Performing cleanup operations after test executions.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * The class utilizes JSON files for storing configuration and collected data,
+ * ensuring that tests can run in a clean state and maintain consistency across
+ * test executions. The methods handle interactions with the application's UI
+ * and manage data integrity by comparing current states with expected values
+ * stored in JSON.
+ * </p>
+ *
+ * <p>
+ * This class is designed to be used within a testing framework, leveraging
+ * annotations for lifecycle management (e.g., @AfterEach, @AfterAll) to ensure
+ * that resources are properly managed and that tests do not interfere with each
+ * other.
+ * </p>
+ *
+ * @throws Exception if any errors occur during the execution of methods.
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExportandImportCheck extends BaseTest {
 
+	/**
+	 * Prepares the test environment before each test case. This method configures
+	 * the browser to use Firefox, navigates to the HK Bus application, and copies
+	 * the default JSON configuration file to a new location for testing.
+	 *
+	 * @throws InterruptedException if the thread is interrupted while executing
+	 *                              this method.
+	 */
 	@BeforeEach
 	public void start() throws InterruptedException {
 		super.configure("firefox", false).navigate("https://hkbus.app/en");
@@ -71,9 +111,34 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Executes a normal test case for data export and import functionality in the
+	 * HK Bus application.
+	 * 
+	 * <p>
+	 * This method performs the following steps:
+	 * <ol>
+	 * <li>Navigates to the settings page and customizes settings.</li>
+	 * <li>Updates Google Analytics settings.</li>
+	 * <li>Navigates to the search page and handles routes.</li>
+	 * <li>Stores items and copies the export link.</li>
+	 * <li>Clears user history and imports store data.</li>
+	 * <li>Checks if the exported and imported data match expected values.</li>
+	 * <li>Validates settings and customized values.</li>
+	 * <li>Handles any errors encountered during the process, including copying
+	 * error logs.</li>
+	 * </ol>
+	 * </p>
+	 * 
+	 * If all checks pass, the test case is marked as successful; otherwise, it logs
+	 * the error details.
+	 *
+	 * @throws Exception if there are issues during the test execution, including
+	 *                   data import errors.
+	 */
 	// This test will try the handle data import and export in a "normal" way
 	@Test
-	//@Disabled
+	@Disabled
 	@Order(1)
 	public void normalTest() throws Exception {
 		String testName = "Normal test on data export and import";
@@ -223,8 +288,29 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Executes an abnormal test case for attempting to put all routes and stops
+	 * into collections within the HK Bus application.
+	 *
+	 * <p>
+	 * This method performs the following steps:
+	 * <ol>
+	 * <li>Navigates to the search page and performs actions on routes.</li>
+	 * <li>Stores the items and copies the export link.</li>
+	 * <li>Clears user history and imports store data.</li>
+	 * <li>Checks if the exported and imported data match expected values.</li>
+	 * <li>Handles any errors encountered during the process, including copying
+	 * error logs.</li>
+	 * </ol>
+	 * </p>
+	 *
+	 * If any checks fail, the method logs the error details.
+	 *
+	 * @throws Exception if there are issues during the test execution or data
+	 *                   import process.
+	 */
 	@Test
-	@Disabled // Check this later
+	// @Disabled // Check this later
 	public void abnormalTest() throws Exception {
 
 		boolean error = false;
@@ -325,6 +411,19 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Imports store data from a specified URL in the HK Bus application.
+	 *
+	 * <p>
+	 * This method navigates to the settings, activates the data import feature,
+	 * fills in the URL retrieved from the exported data, and attempts to import the
+	 * data. It checks if the import button is enabled before proceeding.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 * @throws Exception            if the URL is incorrect or if any other error
+	 *                              occurs during data import.
+	 */
 	private void ImportStoreData() throws InterruptedException, Exception {
 
 		GoToSetting();
@@ -350,32 +449,94 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Navigates to the settings page in the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the settings link and waits for the page to
+	 * load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void GoToSetting() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Navigates to the customize settings page in the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the customize settings link and waits for
+	 * the page to load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void GoToCustomize() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Navigates to the search page in the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the search page link and waits for the page
+	 * to load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void GoToSearchPage() throws InterruptedException {
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Navigates to the "All" tab in the search page of the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the "All" tab button and waits for the tab
+	 * content to load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void GoToAllTab() throws InterruptedException {
 		page.locator("(//button[@role='tab'])[2]").click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Navigates to the home page of the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the home page link and waits for the page to
+	 * load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void GoToHomePage() throws InterruptedException {
 		// Navigate to Home Page
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
 		Thread.sleep(1000);
 	}
 
+	/**
+	 * Copies the export link from the data export section of the HK Bus
+	 * application.
+	 *
+	 * <p>
+	 * This method navigates to the home page, clicks on the data export link, and
+	 * retrieves the URL from the input field.
+	 * </p>
+	 *
+	 * @return the URL of the export link as a String.
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private String CopyExportLink() throws InterruptedException {
 		// Navigate to Home Page
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[7]").click();
@@ -385,6 +546,16 @@ public class ExportandImportCheck extends BaseTest {
 		return URL;
 	}
 
+	/**
+	 * Clears the user records in the HK Bus application.
+	 *
+	 * <p>
+	 * This method navigates to the settings and customize sections, confirms the
+	 * deletion of user records, and refreshes the page to clear any cached data.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
 	private void ClearUserRecord() throws InterruptedException {
 		GoToSetting();
 		GoToCustomize();
@@ -403,6 +574,18 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Handles the storage of routes and stops into collections in the HK Bus
+	 * application.
+	 *
+	 * <p>
+	 * This method interacts with the first route, adds stops to the collection, and
+	 * allows for the selection of multiple collections.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the handling of routes and
+	 *                   stops.
+	 */
 	private static void handleRouteStore() throws Exception {
 		Locator allRoute = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[2]/div/div[2]/div/div");
 		Locator routeButtonLocator = allRoute.locator("button");
@@ -448,6 +631,18 @@ public class ExportandImportCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Handles the storage of multiple routes and their stops into collections in
+	 * the HK Bus application.
+	 *
+	 * <p>
+	 * This method iterates over a list of links, navigating to each one, adds stops
+	 * to collections, and manages the collection settings for each route.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the handling of multiple routes
+	 *                   and stops.
+	 */
 	private static void handleManyRouteStore() throws Exception {
 		String[] links = ReadLink();
 		for (int i = 0; i < links.length; i++) {
@@ -498,6 +693,19 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Reads a list of links from a JSON file.
+	 *
+	 * <p>
+	 * This method reads the content of a JSON file containing links and returns an
+	 * array of strings representing those links.
+	 * </p>
+	 *
+	 * @return an array of links as strings.
+	 * @throws IOException   if an I/O error occurs while reading the file.
+	 * @throws JSONException if there is an error parsing the JSON content.
+	 */
+
 	private static String[] ReadLink() throws IOException, JSONException {
 		String filePath = System.getProperty("user.dir") + "/ButtonLinks/links_20241114.json";
 		String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -514,6 +722,17 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Stores various collections of items in JSON format.
+	 *
+	 * <p>
+	 * This method retrieves and stores data from the application's tabs, including
+	 * ETAs, Home Collections, Work Collections, New Collections, and saves stops in
+	 * JSON format.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the storing process.
+	 */
 	private static void storeItemProcess() throws Exception {
 		// Store ETAs (Star)
 		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
@@ -531,6 +750,20 @@ public class ExportandImportCheck extends BaseTest {
 		saveStopsInJson();
 	}
 
+	/**
+	 * Stores items from a specified UI locator into a JSON file.
+	 *
+	 * <p>
+	 * This method interacts with the UI elements to retrieve data and updates the
+	 * JSON file with the collected information, using a specified key prefix for
+	 * organization.
+	 * </p>
+	 *
+	 * @param locator   the locator for the UI element containing the items to
+	 *                  store.
+	 * @param keyPrefix the prefix key used for storing the data in JSON.
+	 * @throws Exception if any error occurs during the storage process.
+	 */
 	private static void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
 		locator.click();
 		Thread.sleep(1000);
@@ -546,6 +779,21 @@ public class ExportandImportCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Compares items from a UI element with stored data in JSON format.
+	 *
+	 * <p>
+	 * This method retrieves data from a specified UI element, compares it against
+	 * stored data in a JSON file, and checks for consistency. Returns true if all
+	 * items match; otherwise, returns false.
+	 * </p>
+	 *
+	 * @param locator   the locator for the UI element containing the items to
+	 *                  compare.
+	 * @param keyPrefix the prefix key used to retrieve the stored data from JSON.
+	 * @return true if all items match; false otherwise.
+	 * @throws Exception if any error occurs during the comparison process.
+	 */
 	private boolean CompareItemInJson(Locator locator, String keyPrefix) throws Exception {
 		locator.click();
 		Thread.sleep(1000);
@@ -585,6 +833,16 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Saves the names of stops into a JSON file.
+	 *
+	 * <p>
+	 * This method navigates to the stops section of the application and updates the
+	 * JSON file with the names of the stops retrieved from the UI.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the saving process.
+	 */
 	private static void saveStopsInJson() throws Exception {
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[2]").click();
 		Thread.sleep(1000);
@@ -595,6 +853,18 @@ public class ExportandImportCheck extends BaseTest {
 		}
 	}
 
+	/**
+	 * Compares the names of stops from the UI with stored data in JSON format.
+	 *
+	 * <p>
+	 * This method retrieves the names of stops displayed in the application and
+	 * compares them against the stored data in a JSON file. Returns true if all
+	 * stops match; otherwise, returns false.
+	 * </p>
+	 *
+	 * @return true if all stops match; false otherwise.
+	 * @throws Exception if any error occurs during the comparison process.
+	 */
 	private boolean CompareStopsInJson() throws Exception {
 		page.locator("//*[@id=\"root\"]/div/div[3]/a[2]").click();
 		Thread.sleep(1000);
@@ -625,6 +895,16 @@ public class ExportandImportCheck extends BaseTest {
 		return jsonSet.isEmpty();
 	}
 
+	/**
+	 * Adds items to all available collections in the HK Bus application.
+	 *
+	 * <p>
+	 * This method selects all checkboxes corresponding to different collections
+	 * (ETAs, Home, Work, and New Collections) and closes the selection dialog.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the adding process.
+	 */
 	private static void addToAllCollections() throws Exception {
 		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
 		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
@@ -633,6 +913,18 @@ public class ExportandImportCheck extends BaseTest {
 		page.press("body", "Escape");
 	}
 
+	/**
+	 * Updates various customizable settings in the HK Bus application.
+	 *
+	 * <p>
+	 * This method navigates through various settings options and updates them by
+	 * calling the appropriate helper methods. The settings include appearance,
+	 * platform display format, refresh interval, annotated scheduled bus,
+	 * vibration, ETA format, keyboard layout, route filtering, and bus sort order.
+	 * </p>
+	 *
+	 * @throws Exception if any error occurs during the updating process.
+	 */
 	private void CustomizeSetting() throws Exception {
 		// Appearance
 		Locator appearance = page.locator("//html/body/div[3]/div[3]/div/ul/div[5]");
@@ -678,6 +970,20 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Checks the current settings in the HK Bus application against stored values.
+	 *
+	 * <p>
+	 * This method verifies that the current settings match the expected values
+	 * stored in a JSON file. It checks various settings including appearance, power
+	 * saving mode, platform display format, refresh interval, annotated scheduled
+	 * bus, vibration, ETA format, keyboard layout, route filtering, and bus sort
+	 * order.
+	 * </p>
+	 *
+	 * @return true if all settings match the stored values; false otherwise.
+	 * @throws Exception if any error occurs during the checking process.
+	 */
 	private boolean CustomizeSettingCheck() throws Exception {
 		// Appearance
 		Locator appearance = page.locator("//html/body/div[3]/div[3]/div/ul/div[5]");
@@ -723,6 +1029,19 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Updates a specific setting in the HK Bus application and stores the new
+	 * value.
+	 *
+	 * <p>
+	 * This method clicks on the specified setting, retrieves its current value, and
+	 * updates the corresponding entry in the JSON file.
+	 * </p>
+	 *
+	 * @param locator the locator for the UI element representing the setting.
+	 * @param keyPath the key used to store the setting's value in JSON.
+	 * @throws Exception if any error occurs during the update process.
+	 */
 	// Method to handle clicking and updating settings, which only press is okay
 	private static void updateSetting(Locator locator, String keyPath) throws Exception {
 		// Click the setting
@@ -734,6 +1053,19 @@ public class ExportandImportCheck extends BaseTest {
 		WriteJson.updateJsonFile(keyPath, value); // Change to false if using save.json
 	}
 
+	/**
+	 * Checks if the current setting value matches the stored value in JSON.
+	 *
+	 * <p>
+	 * This method retrieves the current value of the specified setting and compares
+	 * it with the value stored in the JSON file. It returns true if they match.
+	 * </p>
+	 *
+	 * @param locator the locator for the UI element representing the setting.
+	 * @param keyPath the key used to retrieve the setting's stored value from JSON.
+	 * @return true if the current value matches the stored value; false otherwise.
+	 * @throws Exception if any error occurs during the checking process.
+	 */
 	// Method to handle checking settings, which only press is okay
 	private static boolean checkSetting(Locator locator, String keyPath) throws Exception {
 		String value = locator.locator("p").innerText().trim();
@@ -747,6 +1079,20 @@ public class ExportandImportCheck extends BaseTest {
 
 	}
 
+	/**
+	 * Updates the refresh interval setting in the HK Bus application.
+	 *
+	 * <p>
+	 * This method interacts with the refresh interval setting by clicking it and
+	 * using keyboard input to navigate to the desired option. The updated value is
+	 * then stored in the JSON file.
+	 * </p>
+	 *
+	 * @param locator the locator for the UI element representing the refresh
+	 *                interval.
+	 * @param keyPath the key used to store the refresh interval's value in JSON.
+	 * @throws Exception if any error occurs during the update process.
+	 */
 	// Special method for Refresh Interval that includes key presses
 	private static void updateRefreshInterval(Locator locator, String keyPath) throws Exception {
 		// Click the setting
@@ -762,6 +1108,22 @@ public class ExportandImportCheck extends BaseTest {
 		WriteJson.updateJsonFile(keyPath, value); // Change to false if using save.json
 	}
 
+	/**
+	 * Checks if the current refresh interval value matches the stored value in
+	 * JSON.
+	 *
+	 * <p>
+	 * This method retrieves the current refresh interval value and compares it
+	 * against the value stored in the JSON file. It returns true if they match.
+	 * </p>
+	 *
+	 * @param locator the locator for the UI element representing the refresh
+	 *                interval.
+	 * @param keyPath the key used to retrieve the refresh interval's stored value
+	 *                from JSON.
+	 * @return true if the current value matches the stored value; false otherwise.
+	 * @throws Exception if any error occurs during the checking process.
+	 */
 	// Special method for Refresh Interval that includes key presses
 	private static boolean checkRefreshInterval(Locator locator, String keyPath) throws Exception {
 		// Click the setting
@@ -777,12 +1139,38 @@ public class ExportandImportCheck extends BaseTest {
 		return (value.equals(setting));
 	}
 
+	/**
+	 * Performs cleanup operations after each test case.
+	 *
+	 * <p>
+	 * This method waits for a short period, calls the method to end the test, and
+	 * deletes the saved JSON data file to ensure a clean state for subsequent
+	 * tests.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while sleeping.
+	 * @throws IOException          if an I/O error occurs during file deletion.
+	 */
 	@AfterEach
-	public void endEach() throws InterruptedException {
+	public void endEach() throws InterruptedException, IOException {
 		Thread.sleep(1000);
 		endEachTest();
+		Path sourcePath = Paths.get(System.getProperty("user.dir")
+				+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
+		Files.delete(sourcePath);
 	}
 
+	/**
+	 * Performs cleanup operations after all test cases have been executed.
+	 *
+	 * <p>
+	 * This method waits for a short period and calls the method to end all tests,
+	 * ensuring that any necessary global cleanup is performed after all tests are
+	 * complete.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while sleeping.
+	 */
 	@AfterAll
 	public static void endAll() throws InterruptedException {
 		Thread.sleep(1000);

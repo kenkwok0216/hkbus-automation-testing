@@ -6,10 +6,29 @@ import java.nio.file.Paths;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * The {@code WriteJson} class provides functionality to update a JSON file. It
+ * allows for modification of specific keys within the JSON structure, including
+ * support for handling both single values and arrays.
+ */
 public class WriteJson {
+	/**
+	 * The file path for the JSON file to be updated. This path is constructed based
+	 * on the current working directory.
+	 */
 	static String filePath = System.getProperty("user.dir")
 			+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json";
 
+	/**
+	 * Updates the value of a specified key in the JSON file.
+	 *
+	 * @param keyPath  The dot-separated path to the key to be updated. For example,
+	 *                 "parentKey.childKey" specifies a nested key.
+	 * @param newValue The new value to be set for the specified key.
+	 * @throws Exception If the specified key path does not exist in the JSON
+	 *                   structure, or if an error occurs during file reading or
+	 *                   writing.
+	 */
 	public static void updateJsonFile(String keyPath, String newValue) throws Exception {
 		// Read the existing content
 		String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -60,6 +79,14 @@ public class WriteJson {
 		Files.write(Paths.get(filePath), jsonObject.toString(4).getBytes());
 	}
 
+	/**
+	 * Determines if a specified key should be treated as a single value or as an
+	 * array.
+	 *
+	 * @param key The key to check.
+	 * @return {@code true} if the key should be treated as an array; {@code false}
+	 *         if it should be treated as a single value.
+	 */
 	// Method to determine if a key should be treated as a single value
 	private static boolean shouldBeArray(String key) {
 		// Define which keys should hold single values

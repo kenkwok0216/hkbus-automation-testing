@@ -15,8 +15,23 @@ import com.microsoft.playwright.Locator;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
 
+/**
+ * The {@code GetLink} class is a Playwright test utility that navigates to a
+ * specific website, retrieves all bus route links, and saves them in a JSON
+ * file. This class extends {@link BaseTest} and serves as an entry point for
+ * executing the test.
+ */
 public class GetLink extends BaseTest {
 
+	/**
+	 * The main method that executes the process of fetching bus route links.
+	 *
+	 * @param args Command-line arguments (not used).
+	 * @throws InterruptedException If the current thread is interrupted while
+	 *                              sleeping.
+	 * @throws JSONException        If there is an issue with creating or
+	 *                              manipulating the JSON data.
+	 */
 	public static void main(String args[]) throws InterruptedException, JSONException {
 
 		BaseTest basetest = new BaseTest();
