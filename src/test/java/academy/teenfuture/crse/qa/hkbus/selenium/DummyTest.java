@@ -37,11 +37,9 @@ public class DummyTest extends BaseTest {
 		quitDriver();
 	}
 
-
 	@AfterAll
 	public static void endAll() {
 		endAllTest();
 	}
-
 
 }
