@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import academy.teenfuture.crse.qa.hkbus.selenium.pages.HomePage;
 import academy.teenfuture.crse.qa.hkbus.selenium.pages.NavBar;
+import academy.teenfuture.crse.qa.hkbus.selenium.pages.RouteDetailPage;
 import academy.teenfuture.crse.qa.hkbus.selenium.pages.SearchPage;
 import academy.teenfuture.crse.qa.hkbus.selenium.pojo.BusRoute;
 import academy.teenfuture.crse.qa.hkbus.selenium.util.readers.BusRouteDataReader;
@@ -39,7 +40,7 @@ public class AddBusRouteTest extends BaseTest {
 
     @Test
     public void addBusRoutesTest() throws InterruptedException {
-        int repeat = 2;
+        int repeat = 1;
         for (int i = 0; i < repeat; i++) {
             addBusRoute(busRouteList.get(i).getRoute());
         }
@@ -48,15 +49,19 @@ public class AddBusRouteTest extends BaseTest {
     private void addBusRoute(String routeName) throws InterruptedException {
         SearchPage searchPage;
         HomePage homePage;
+        RouteDetailPage routeDetailPage;
 
         // Go to Search page
         searchPage = navBar.clickNavSearch();
         Thread.sleep(2000);
 
-        searchPage.clickInAppKeyboardBtns(routeName, 1000);
+        // searchPage.clickInAppKeyboardBtns(routeName, 0);
         // searchPage.clickInAppKeyboardBtn("1");
         // searchPage.clickInAppKeyboardBtn("0");
         // searchPage.clickInAppKeyboardBtn("M");
+        // Thread.sleep(2000);
+
+        routeDetailPage = searchPage.clickRouteCell(199);
         Thread.sleep(2000);
 
         // Back to Home page
