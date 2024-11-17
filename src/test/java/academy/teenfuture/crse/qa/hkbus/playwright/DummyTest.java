@@ -29,7 +29,7 @@ public class DummyTest extends BaseTest {
 		int noItems = searchItem.count();
 		System.out.println("no. of Text-Area item " + noItems);
 		searchItem.fill("xPATH"); // what text "xPATH" to search
-		generateExtentTest("Validated Input", true, "Sucessful Input");
+		generateExtentTest("Validated Input", true, "Successful Input");
 		Thread.sleep(3000);
 	}
 
@@ -40,7 +40,7 @@ public class DummyTest extends BaseTest {
 		int noItems = searchItem.count();
 		System.out.println("no. of Text-Area item " + noItems);
 		searchItem.fill("xPATH"); // what text "xPATH" to search
-		generateExtentTest("Validated Input", true, "Sucessful Input", page.screenshot());
+		generateExtentTest("Validated Input", true, "Successful Input", page.screenshot());
 		Thread.sleep(3000);
 	}
 
