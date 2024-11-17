@@ -1,5 +1,7 @@
 package academy.teenfuture.crse.qa.hkbus.playwright;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,11 +90,14 @@ public class TestFirst extends BaseTest {
 			newpage.close();
 			newpage = null;
 		}
+
+
+
 	}
 
 	@Test
 	// @Disabled
-	public void fontSizeChengeTest_notused() throws InterruptedException {
+	public void fontSizeChengeTest_notused() throws InterruptedException, IOException {
 		Playwright playwright = Playwright.create();
 		// Part 1 check the initial value of the font slider
 		int count = 0;
@@ -157,6 +162,17 @@ public class TestFirst extends BaseTest {
 
 		System.out.println(fontSizeValue);
 
+
+		//creat report for font size 26
+		if(fontSizeValue.equals("14")) {
+			super.generateExtentTest("fontSizeTest",true, "This fontSizeTest pass");
+		} else {
+			super.generateExtentTest("fontSizeTest", false, "The font is not 26", page.screenshot());
+		}
+
+
+
+
 		// part 2.2 leave font page
 		page.waitForTimeout(2000);
 		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
@@ -192,6 +208,8 @@ public class TestFirst extends BaseTest {
 		 * //finish display each page
 		 * 
 		 */
+
+
 
 		// Part 3 change font size to 10(smallest size)
 		// nevigate to setting page
@@ -237,6 +255,15 @@ public class TestFirst extends BaseTest {
 		fontSizeValue = font.evaluate("el => getComputedStyle(el).fontSize").toString();
 		System.out.println(fontSizeValue);
 
+
+		//creat report for font size 10
+		if(fontSizeValue.equals("10)")) {
+			super.generateExtentTest("fontSizeTest",true, "This fontSizeTest pass");
+		} else {
+			super.generateExtentTest("fontSizeTest", false, "The font is not 10", page.screenshot());
+		}
+
+
 		// Part 4 change font size to 26(biggest size)
 		// part 2.1 leave font page
 		page.waitForTimeout(2000);
@@ -256,7 +283,7 @@ public class TestFirst extends BaseTest {
 		// nevigate to slider value = 18
 		valueLabel3.click();
 		// Thread.sleep(5000);
-		// nevigate to value =10
+		// nevigate to value =26
 		valueLabel3.press("ArrowRight");
 		// Thread.sleep(5000);
 		valueLabel3.press("ArrowRight");
@@ -273,8 +300,278 @@ public class TestFirst extends BaseTest {
 
 		// Close the browser
 		// browser.close();
+		//creat report for font size 26
+		if(fontSizeValue.equals("26)")) {
+			super.generateExtentTest("fontSizeTest",true, "This fontSizeTest pass");
+		} else {
+			super.generateExtentTest("fontSizeTest", false, "The font is not 26", page.screenshot());
+		}
 
 	}
+
+	@Test
+	@Disabled       
+	 public void keyboardLayoutCheck() throws InterruptedException {
+		//part 1 check if order=123456789c0b
+		Playwright playwright = Playwright.create();
+		BrowserType browserType = playwright.chromium();
+		Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
+		BrowserContext browserContext = browser.newContext();
+		Page page = browserContext.newPage();
+		
+		//nevigate to web home page of hkbus
+		page.navigate("https://hkbus.app/zh/");
+		//Thread.sleep(5000);
+		
+		//nevigate to setting page
+		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
+		//Thread.sleep(2000);
+
+		//nevigate to perosnal setting 
+		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
+		//Thread.sleep(5000);
+		
+		//find the order = 123456789c0b
+		Locator settingKeyboardLayoutButton = page.locator("//li[contains(@class,'MuiListItem-root MuiListItem-gutters')]/following-sibling::div[1]");
+		String layoutOrder=settingKeyboardLayoutButton.locator("p").innerText().trim();
+		System.out.println("value : "+layoutOrder);
+
+		//check buttonboard
+		//leave setting page
+		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
+		Thread.sleep(2000);
+
+		 //click and display Search page
+		 page.waitForTimeout(2000);
+		 page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
+		 Thread.sleep(2000);
+
+		 //check if buttonboard display according to the order
+		 Locator buttonboard = page.locator("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]");
+		 Locator NumberButton=buttonboard.locator("button");
+		 System.out.println(NumberButton.nth(0).innerText().trim());
+
+		for (int i=0; i<9; i++) {
+		  Boolean numberMatch=NumberButton.nth(i).innerText().trim().equals(Character.toString(layoutOrder.charAt(i)));
+		  System.out.println(numberMatch);
+		  if (numberMatch){
+			System.out.println("NumberMatch");
+		  }
+		}
+
+		//part 2.1 change the order
+		//nevigate to setting page
+		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
+		//Thread.sleep(2000);
+
+		//nevigate to perosnal setting 
+		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
+		//Thread.sleep(5000);
+	  
+		//click and change the layout order
+		settingKeyboardLayoutButton.click();
+		//Thread.sleep(5000);
+
+		//check if value = 789456123c0b
+		String layoutOrder2=settingKeyboardLayoutButton.locator("p").innerText().trim();
+		System.out.println("value : "+layoutOrder2);
+		//Thread.sleep(5000);
+
+		//part 2.2 change the order
+		//check buttonboard
+		//leave setting page
+		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
+		Thread.sleep(2000);
+
+		 //click and display Search page
+		 page.waitForTimeout(2000);
+		 page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
+		 Thread.sleep(2000);
+
+		 //check if buttonboard display according to the order
+		 Locator buttonboard2 = page.locator("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]");
+		 Locator NumberButton2=buttonboard2.locator("button");
+		 System.out.println(NumberButton2.nth(0).innerText().trim());
+
+		for (int i=0; i<9; i++) {
+		  Boolean numberMatch=NumberButton2.nth(i).innerText().trim().equals(Character.toString(layoutOrder2.charAt(i)));
+		  System.out.println(numberMatch);
+		  if (numberMatch){
+			System.out.println("NumberMatch");
+		  }
+		}
+
+		browser.close();
+	  }
+
+	  @Test
+	  //@Disabled       
+	  public void historyOnOff() throws InterruptedException {
+	  //part 1 check if history is On
+	  Playwright playwright = Playwright.create();
+	  BrowserType browserType = playwright.chromium();
+	  Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
+	  BrowserContext browserContext = browser.newContext();
+	  Page page = browserContext.newPage();
+
+	  //nevigate to web home page of hkbus
+	  page.navigate("https://hkbus.app/en/");
+	  Thread.sleep(2000);
+
+	  //Check if the history button is On
+	  //nevigate to setting page
+	  page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
+	  //Thread.sleep(2000);
+
+	  //nevigate to perosnal setting 
+	  page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
+	  //Thread.sleep(5000);	
+
+	  //Scroll down the page
+	  page.mouse().wheel(0, 300);
+	  Locator history =page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
+	  history.scrollIntoViewIfNeeded();
+	  Thread.sleep(5000);
+
+	  //chech if the value is On
+	  Locator historyOn=history.locator("p");
+	  System.out.println("Search historty value: "+historyOn.nth(0).innerText().trim());
+	  //Thread.sleep(5000);
+
+	  //leave setting page
+	  page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
+	  //Thread.sleep(5000);
+
+	  //click and display Search page
+	  page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
+	  Thread.sleep(2000);
+
+	  // // check whether recent button exist
+	  // Locator recent = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[1]/div/div/div/button[1]");
+	  //   if (recent.count() > 0) {
+	  //     System.out.println("recent button exist"); // The button exists
+	  // } else {
+	  //     System.out.println("recent button not exist"); // The button does not exist
+	  // }
+
+
+
+
+	  //Part 2.1 check if recent button exist
+	  Locator header = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[1]/div/div/div");
+	  Locator button=header.locator("button");
+	  //System.out.println(button.nth(0).innerText().trim());
+	  // Get the count of buttons
+	  int buttonCount = button.count();
+	  boolean recentExists = false; //flag to check if "recent" exist
+
+	  // Print all button texts in the header
+	  for (int i = 0; i < buttonCount; i++) {
+		  String buttonText = button.nth(i).innerText().trim(); // Get the text of each button
+		  System.out.println("Button " + (i + 1) + ": " + buttonText); // Print the button text
+		  
+		//check if the button text matches "Recent"
+		if (buttonText.equalsIgnoreCase("Recent")) {
+		  recentExists =true; //set flag to true if found
+		  break;
+		  }
+	  }
+
+	  //print the result base on the flag
+	  if (recentExists) {
+		System.out.println("Recent exists");
+	  }else {
+		System.out.println("Recent not exists");
+	  }     
+
+
+
+	  //finish part 1
+	 //nevigate to setting page
+	  page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
+	  //Thread.sleep(2000);
+
+	  //nevigate to perosnal setting 
+	  page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
+	  //Thread.sleep(5000);	
+
+	  //Scroll down the page
+	  page.mouse().wheel(0, 300);
+	  //Locator history =page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
+	  history.scrollIntoViewIfNeeded();
+	   
+	  //Part 2 
+	  //click and Off the history
+	  Locator history2 =page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
+	  //Thread.sleep(5000);
+	  history2.scrollIntoViewIfNeeded();
+	  //Thread.sleep(5000);
+	  history2.click();
+	  //Thread.sleep(5000);
+
+	  //chech if the value is Off
+	  Locator historyOff=history2.locator("p");
+	  System.out.println("Search historty value: "+historyOff.nth(0).innerText().trim());
+	  //Thread.sleep(5000)
+
+
+
+
+
+
+	  //Part 2.1 check if recent button exist
+	  page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
+	  //Thread.sleep(5000);
+
+	  //click and display Search page
+	  page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
+	  //Thread.sleep(5000);
+
+	  Locator header2 = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[1]/div/div/div");
+	  Locator button2=header2.locator("button");
+	  //System.out.println(button.nth(0).innerText().trim());
+	  // Get the count of buttons
+	  int buttonCount2 = button2.count();
+	  boolean recentExists2 = false; //flag to check if "recent" exist
+
+	  // Print all button texts in the header
+	  for (int i = 0; i < buttonCount2; i++) {
+		  String buttonText2 = button2.nth(i).innerText().trim(); // Get the text of each button
+		  System.out.println("Button " + (i + 1) + ": " + buttonText2); // Print the button text
+		  
+		//check if the button text matches "Recent"
+		if (buttonText2.equalsIgnoreCase("Recent")) {
+		  recentExists2 =true; //set flag to true if found
+		  break;
+		  }
+	  }
+
+	  //print the result base on the flag
+	  if (recentExists2) {
+		System.out.println("Recent exists");
+	  }else {
+		System.out.println("Recent not exists");
+	  }
+
+
+	  
+
+
+
+		browser.close();
+   }
+
+
+
+
+
+	 
+
+
+
+
+
+	
 
 	@AfterEach
 	public void endEach() {
