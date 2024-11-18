@@ -14,7 +14,7 @@ import com.microsoft.playwright.Page;
 /**
  * Template test class
  */
-public class TestFirst extends BaseTest {
+public class FontSizeAndKeyBoardTest extends BaseTest {
 
 	@BeforeEach
 	public void start() {
