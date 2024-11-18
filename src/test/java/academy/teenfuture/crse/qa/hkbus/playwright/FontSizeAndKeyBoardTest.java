@@ -26,7 +26,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 	// No need to record video
 	@Test
 	@Disabled
-	public void fontSizeChengeTest() throws InterruptedException, IOException {
+	public void fontSizeInitialTest() throws InterruptedException, IOException {
 
 		// Start getting initial Value
 		String initialValue;
@@ -100,7 +100,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 
 	@Test
 	// @Disabled
-	public void fontSizeChengeTest_notused() throws InterruptedException, IOException {
+	public void fontSizeChangeTest() throws InterruptedException, IOException {
 		// Part 1 change font size to 10(smallest size)
 		// nevigate to setting page
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
