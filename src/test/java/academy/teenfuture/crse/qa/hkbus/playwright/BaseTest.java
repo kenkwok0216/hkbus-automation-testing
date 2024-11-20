@@ -9,9 +9,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.List;
-import java.util.Arrays;
-
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -94,7 +91,7 @@ public class BaseTest {
 	protected static Page page;
 	protected static BrowserContext browserContext;
 	protected static boolean isVideoRecording; // Track if video recording is enabled
-	//private static List<String> permissions = Arrays.asList("geolocation");
+	// private static List<String> permissions = Arrays.asList("geolocation");
 
 	private static ExtentReports extent;
 	private ExtentTest test;
@@ -152,7 +149,8 @@ public class BaseTest {
 			Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
 			browserContext = browser.newContext(new Browser.NewContextOptions().setViewportSize(width, height)
 					.setRecordVideoDir(Paths.get("video/")).setRecordVideoSize(width, height));
-			//browserContext.grantPermissions(permissions);
+			browserContext.setDefaultTimeout(3000);
+			// browserContext.grantPermissions(permissions);
 			page = browserContext.newPage();
 
 			// Add a method to handle video recording
@@ -171,8 +169,10 @@ public class BaseTest {
 
 			Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
 			browserContext = browser.newContext();
-			//browserContext.grantPermissions(permissions);
+			browserContext.setDefaultTimeout(3000);
+			// browserContext.grantPermissions(permissions);
 			page = browserContext.newPage();
+
 		}
 
 		return page;

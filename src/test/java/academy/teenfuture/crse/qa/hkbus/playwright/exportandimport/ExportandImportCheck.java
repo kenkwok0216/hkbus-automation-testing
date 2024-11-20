@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.TimeoutError;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
 import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.ReadJson;
@@ -46,7 +47,6 @@ import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJso
 //- Google Analytics: "On"
 
 // Therefore, to make sure those item will be import, we will adjust all of them
-
 /**
  * This class contains methods for managing and testing settings, data storage,
  * and route handling in the HK Bus application.
@@ -81,6 +81,10 @@ import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJso
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExportandImportCheck extends BaseTest {
+	private static int addedStops = 0;
+	// For this variable we have
+	// {stops collections, home collections, work collections, new collections}
+	private static int[] addedcollections = { 0, 0, 0, 0 };
 
 	/**
 	 * Prepares the test environment before each test case. This method configures
@@ -92,6 +96,11 @@ public class ExportandImportCheck extends BaseTest {
 	 */
 	@BeforeEach
 	public void start() throws InterruptedException {
+		addedStops = 0;
+		for (int i = 0; i < addedcollections.length; i++) {
+			addedcollections[i] = 0;
+		}
+
 		super.configure("firefox", false).navigate("https://hkbus.app/en");
 		// This is to handle the saved.json to store the edited item
 		// Source file path
@@ -169,7 +178,12 @@ public class ExportandImportCheck extends BaseTest {
 		// Navigate to Home Page
 		GoToHomePage();
 
-		storeItemProcess();
+		try {
+			storeItemProcess();
+		} catch (Exception e) {
+			super.generateExtentTest(testName, false, e.getMessage());
+			error = true;
+		}
 
 		Thread.sleep(1000);
 
@@ -209,6 +223,21 @@ public class ExportandImportCheck extends BaseTest {
 		}
 
 		// Then we will start the Checking of data
+
+		// The first step is check the numbers of import route first
+		try {
+
+			verifyImportedCollections();
+
+		} catch (Exception e) {
+
+			super.generateExtentTest(testName, false, e.getMessage(), page.screenshot());
+			error = true;
+			page.press("body", "Escape");
+
+		}
+
+		// Then we will start the Checking of data
 		GoToHomePage();
 
 		// Check (Star)
@@ -225,7 +254,7 @@ public class ExportandImportCheck extends BaseTest {
 		try {
 			// if there are somethings is false
 			if (!(testETAs && testHome && testWork && testNew && testStops)) {
-				throw new Exception("There are error in Export and Import function");
+				throw new Exception("The stored data is not match the show data");
 			}
 		} catch (Exception e) {
 			error = true;
@@ -328,7 +357,12 @@ public class ExportandImportCheck extends BaseTest {
 		// Navigate to Home Page
 		GoToHomePage();
 
-		storeItemProcess();
+		try {
+			storeItemProcess();
+		} catch (Exception e) {
+			super.generateExtentTest(testName, false, e.getMessage());
+			error = true;
+		}
 
 		Thread.sleep(1000);
 
@@ -371,7 +405,21 @@ public class ExportandImportCheck extends BaseTest {
 			}
 		}
 
+		// The first steps is to check the numbers of imported is correct
 		// Then we will start the Checking of data
+		try {
+
+			verifyImportedCollections();
+
+		} catch (Exception e) {
+
+			super.generateExtentTest(testName, false, e.getMessage(), page.screenshot());
+			error = true;
+			page.press("body", "Escape");
+
+		}
+
+		// Then we check the item
 		GoToHomePage();
 
 		// Check (Star)
@@ -408,6 +456,43 @@ public class ExportandImportCheck extends BaseTest {
 			}
 
 		}
+
+	}
+
+	/**
+	 * Verifies that the number of imported collections matches the expected value.
+	 *
+	 * <p>
+	 * This method navigates to the settings and manages collections. It retrieves
+	 * the list of collections and checks if the number of ETAs matches the expected
+	 * count represented by the variable {@code addedcollections}. If there is a
+	 * mismatch, an exception is thrown indicating the expected and actual values.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted during execution.
+	 * @throws Exception            if the number of imported collections does not
+	 *                              match the expected value.
+	 */
+	private void verifyImportedCollections() throws InterruptedException, Exception {
+		GoToSetting();
+		GoToCustomize();
+		// This is the go to manage collections
+		page.locator("//html/body/div[3]/div[3]/div/ul/div[1]").click();
+
+		Thread.sleep(1000);
+		// Locate the collectionsLists
+		Locator collectionLists = page.locator("//html/body/div[3]/div[3]/div/div/div[2]");
+		Locator dataStores = collectionLists.locator("span:has-text('Number of ETAs:')");
+		for (int i = 0; i < dataStores.count(); i++) {
+			String[] parts = dataStores.nth(i).innerText().split(": ");
+			if (!parts[1].equals(String.valueOf(addedcollections[i]))) {
+				throw new Exception("The import data is incorrect as the imported number should be " + addedcollections
+						+ " but now is " + parts[1]);
+			}
+		}
+
+		page.press("body", "Escape");
+		Thread.sleep(1000);
 
 	}
 
@@ -599,7 +684,11 @@ public class ExportandImportCheck extends BaseTest {
 		// Interact with the first button
 		allStopButton.nth(0).click();
 		Thread.sleep(1000);
-		page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
+		Locator bookmarkicon = page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]");
+		if (bookmarkicon.locator("svg").getAttribute("data-testid").equals("BookmarkBorderIcon")) {
+			bookmarkicon.click();
+			addedStops++;
+		}
 		page.press("body", "Escape");
 
 		allStopButton.nth(3).click();
@@ -611,10 +700,7 @@ public class ExportandImportCheck extends BaseTest {
 		page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
 		page.press("body", "Escape");
 		// To add to all collection
-		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
-		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
-		page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
-		page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
+		addToAllCollections();
 		page.press("body", "Escape");
 
 		for (int i = 4; i < allStopButtonCount; i++) {
@@ -622,7 +708,11 @@ public class ExportandImportCheck extends BaseTest {
 			// Thread.sleep(1000);
 			allStopButton = allStop.locator("role=button");
 			// access the bookmarked with full xpath
-			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
+			bookmarkicon = page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]");
+			if (bookmarkicon.locator("svg").getAttribute("data-testid").equals("BookmarkBorderIcon")) {
+				bookmarkicon.click();
+				addedStops++;
+			}
 			page.press("body", "Escape");
 
 			allStopButton.nth(i).click();
@@ -646,49 +736,67 @@ public class ExportandImportCheck extends BaseTest {
 	private static void handleManyRouteStore() throws Exception {
 		String[] links = ReadLink();
 		for (int i = 0; i < links.length; i++) {
-			page.navigate(links[i]);
+			try {
+				page.navigate(links[i]);
 
-			Thread.sleep(500);
-			Locator allStop = page.locator("//*[@id=\"root\"]/div/div[2]/div[3]");
-			Locator allStopButton = allStop.locator("role=button");
-			int allStopButtonCount = allStopButton.count();
+				Thread.sleep(750);
+				Locator allStop = page.locator("//*[@id=\"root\"]/div/div[2]/div[3]");
+				Locator allStopButton = allStop.locator("role=button");
+				int allStopButtonCount = allStopButton.count();
+				System.out.println("iteration: " + i + " number of stops: " + allStopButtonCount);
+				System.out.println("added stops: " + addedStops + " added Collections: " + addedcollections[0]);
 
-			// Interact with the first button
-			allStopButton.nth(0).click();
-			Thread.sleep(500);
-			page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
-			page.press("body", "Escape");
+				// Interact with the first button
+				allStopButton.nth(0).click();
+				Locator bookmarkicon = page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]");
+				if (bookmarkicon.locator("svg").getAttribute("data-testid").equals("BookmarkBorderIcon")) {
+					bookmarkicon.click();
+					addedStops++;
+				}
 
-			allStopButton.nth(3).click();
-
-			if (i == 0) {
-				// press add button to add a new collection
-				page.locator("//h6[text()='Collections']/following-sibling::button");
-				// Thread.sleep(1000);
-				// This is to add new collection
-				page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
-				page.press("body", "Escape");
-			}
-			// To add to all collection
-			page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
-			page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
-			page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
-			page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
-			page.press("body", "Escape");
-
-			for (int j = 4; j < allStopButtonCount; j++) {
-				allStopButton.nth(j).dblclick();
-				// Thread.sleep(1000);
-				allStopButton = allStop.locator("role=button");
-				// access the bookmarked with full xpath
-				page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]").click();
 				page.press("body", "Escape");
 
-				allStopButton.nth(j).click();
-				// page.locator("//h6[text()='Collections']/following-sibling::button").click();
+				allStopButton.nth(3).click(new Locator.ClickOptions().setTimeout(3000));
+
+				if (i == 0) {
+					// press add button to add a new collection
+					page.locator("//h6[text()='Collections']/following-sibling::button");
+					// Thread.sleep(1000);
+					// This is to add new collection
+					page.locator("//div[@class='MuiBox-root hkbus-gg4vpm']//button[1]").click();
+					page.press("body", "Escape");
+				}
+				// To add to all collection
 				addToAllCollections();
-			}
 
+				for (int j = 4; j < allStopButtonCount; j++) {
+					allStopButton.nth(j).dblclick();
+					// Thread.sleep(1000);
+					allStopButton = allStop.locator("role=button");
+					// access the bookmarked with full xpath
+					bookmarkicon = page.locator("//html/body/div[3]/div[3]/div/h2/div[1]/button[1]");
+					if (bookmarkicon.locator("svg").getAttribute("data-testid").equals("BookmarkBorderIcon")) {
+						bookmarkicon.click(new Locator.ClickOptions().setTimeout(3000));
+						addedStops++;
+					}
+
+					page.press("body", "Escape");
+
+					allStopButton.nth(j).click(new Locator.ClickOptions().setTimeout(3000));
+					// page.locator("//h6[text()='Collections']/following-sibling::button").click();
+					addToAllCollections();
+
+				}
+
+				if (i == 3) {
+					break;
+				}
+			} catch (TimeoutError e) {
+				System.out.println("Timeout occurred in iterations: " + i);
+				System.out.println("iterate it again");
+				i--;
+				continue;
+			}
 		}
 
 	}
@@ -705,7 +813,6 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws IOException   if an I/O error occurs while reading the file.
 	 * @throws JSONException if there is an error parsing the JSON content.
 	 */
-
 	private static String[] ReadLink() throws IOException, JSONException {
 		String filePath = System.getProperty("user.dir") + "/ButtonLinks/links_20241114.json";
 		String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -734,20 +841,26 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws Exception if any error occurs during the storing process.
 	 */
 	private static void storeItemProcess() throws Exception {
+		Thread.sleep(1000);
 		// Store ETAs (Star)
-		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas");
+		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas", 0);
+		Thread.sleep(1000);
 
 		// Store Home Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home");
+		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home", 1);
+		Thread.sleep(1000);
 
 		// Store Work Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work");
+		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work", 2);
+		Thread.sleep(1000);
 
 		// Store New Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New");
+		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New", 3);
+		Thread.sleep(1000);
 
 		// Save Stops
 		saveStopsInJson();
+		Thread.sleep(1000);
 	}
 
 	/**
@@ -761,14 +874,21 @@ public class ExportandImportCheck extends BaseTest {
 	 *
 	 * @param locator   the locator for the UI element containing the items to
 	 *                  store.
+	 * 
 	 * @param keyPrefix the prefix key used for storing the data in JSON.
+	 * @param index     the index used to access the expected count of collections
+	 *                  from the {@code addedcollections} array.
 	 * @throws Exception if any error occurs during the storage process.
 	 */
-	private static void storeItemInJson(Locator locator, String keyPrefix) throws Exception {
+	private static void storeItemInJson(Locator locator, String keyPrefix, int index) throws Exception {
 		locator.click();
 		Thread.sleep(1000);
 
 		Locator storedETAs = locator.locator("(//ul[@class='MuiList-root hkbus-1abambu']//li)");
+
+		System.out
+				.println("item found:" + storedETAs.count() + " and item should be stored: " + addedcollections[index]);
+
 		for (int i = 0; i < storedETAs.count(); i++) {
 			String route = storedETAs.nth(i).locator("h2 > span").nth(0).innerText().trim() + " ";
 			String bus = storedETAs.nth(i).locator("h4").nth(0).innerText().trim() + " ";
@@ -777,6 +897,14 @@ public class ExportandImportCheck extends BaseTest {
 
 			WriteJson.updateJsonFile(keyPrefix, route + bus + destination + stops);
 		}
+
+		if (storedETAs.count() < addedcollections[index]) {
+			throw new Exception("There are limit on the show on stored collections as the limit is only "
+					+ storedETAs.count() + " but there are " + addedcollections[index]);
+		} else if (storedETAs.count() > addedcollections[index]) {
+			throw new Exception("There are error on the show on stored collections");
+		}
+
 	}
 
 	/**
@@ -848,9 +976,19 @@ public class ExportandImportCheck extends BaseTest {
 		Thread.sleep(1000);
 		Locator stopsNamesButtons = page.locator("//*[@id=\"root\"]/div/div[2]/div/div[1]").locator("button");
 
+		System.out
+				.println("Stops founded: " + stopsNamesButtons.count() + " and Stops should be stored: " + addedStops);
+
 		for (int i = 0; i < stopsNamesButtons.count(); i++) {
 			WriteJson.updateJsonFile("Saved Stops", stopsNamesButtons.nth(i).innerText().trim());
 		}
+
+		if (stopsNamesButtons.count() < addedStops) {
+			throw new Exception("There are limit on the show on stops as the limits is only " + stopsNamesButtons);
+		} else if (stopsNamesButtons.count() > addedStops) {
+			throw new Exception("There are error on the show on stops");
+		}
+
 	}
 
 	/**
@@ -887,7 +1025,7 @@ public class ExportandImportCheck extends BaseTest {
 			// Check if the collected UI data exists in the JSON data
 			if (jsonSet.contains(getData)) {
 				jsonSet.remove(getData); // Optional: Remove if you want to check for uniqueness
-				System.out.println(jsonSet.toString());
+				// System.out.println(jsonSet.toString());
 			}
 		}
 
@@ -906,24 +1044,47 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws Exception if any error occurs during the adding process.
 	 */
 	private static void addToAllCollections() throws Exception {
-		page.locator("(//input[@type='checkbox'])[2]").click(); // ETAs
-		page.locator("(//input[@type='checkbox'])[3]").click(); // Home Collections
-		page.locator("(//input[@type='checkbox'])[4]").click(); // Work Collections
-		page.locator("(//input[@type='checkbox'])[5]").click(); // New Collections
+		// clickCheckboxByIcon(page.locator("(//input[@type='checkbox'])[2]"));
+		// clickCheckboxByIcon(page.locator("(//input[@type='checkbox'])[3]"));
+		// clickCheckboxByIcon(page.locator("(//input[@type='checkbox'])[4]"));
+		// clickCheckboxByIcon(page.locator("(//input[@type='checkbox'])[5]"));
+		clickCheckboxByIcon(page.locator("//html/body/div[3]/div[3]/div/div[2]/div/div[2]/span"), 0);
+		clickCheckboxByIcon(page.locator("//html/body/div[3]/div[3]/div/div[4]/div[1]/div[2]/span"), 1);
+		clickCheckboxByIcon(page.locator("//html/body/div[3]/div[3]/div/div[4]/div[2]/div[2]/span"), 2);
+		clickCheckboxByIcon(page.locator("//html/body/div[3]/div[3]/div/div[4]/div[3]/div[2]/span"), 3);
 		page.press("body", "Escape");
+
 	}
 
 	/**
-	 * Updates various customizable settings in the HK Bus application.
+	 * Clicks a checkbox if it is represented by a specific icon.
 	 *
 	 * <p>
-	 * This method navigates through various settings options and updates them by
-	 * calling the appropriate helper methods. The settings include appearance,
-	 * platform display format, refresh interval, annotated scheduled bus,
-	 * vibration, ETA format, keyboard layout, route filtering, and bus sort order.
+	 * This method checks if the checkbox icon matches "BookmarkBorderIcon" and
+	 * clicks it if it does.
 	 * </p>
 	 *
-	 * @throws Exception if any error occurs during the updating process.
+	 * @param index   the index used to access the expected count of collections
+	 *                from the {@code addedcollections} array.
+	 * @param locator the locator for the checkbox element to interact with.
+	 */
+	private static void clickCheckboxByIcon(Locator locator, int index) {
+		if (locator.locator("svg").getAttribute("data-testid").equals("BookmarkBorderIcon")) {
+			locator.click(new Locator.ClickOptions().setTimeout(3000));
+			addedcollections[index]++;
+		}
+	}
+
+	/**
+	 * Clicks a checkbox and increments a counter if it matches a specific icon.
+	 *
+	 * <p>
+	 * This method checks if the checkbox icon matches "BookmarkBorderIcon", clicks
+	 * it if it does, and increments the provided counter.
+	 * </p>
+	 *
+	 * @param locator the locator for the checkbox element to interact with.
+	 * @param number  an integer that represents a counter to track checkbox clicks.
 	 */
 	private void CustomizeSetting() throws Exception {
 		// Appearance
@@ -1051,6 +1212,7 @@ public class ExportandImportCheck extends BaseTest {
 		System.out.println(value);
 		// Update the JSON file with the new value
 		WriteJson.updateJsonFile(keyPath, value); // Change to false if using save.json
+		Thread.sleep(1000);
 	}
 
 	/**
@@ -1152,12 +1314,9 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws IOException          if an I/O error occurs during file deletion.
 	 */
 	@AfterEach
-	public void endEach() throws InterruptedException, IOException {
+	public void endEach() throws InterruptedException {
 		Thread.sleep(1000);
 		endEachTest();
-		Path sourcePath = Paths.get(System.getProperty("user.dir")
-				+ "/src/test/java/academy/teenfuture/crse/qa/hkbus/playwright/exportandimport/saveData/saved.json");
-		Files.delete(sourcePath);
 	}
 
 	/**
