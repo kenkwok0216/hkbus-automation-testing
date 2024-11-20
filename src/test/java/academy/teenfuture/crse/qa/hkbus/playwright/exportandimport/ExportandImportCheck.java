@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -83,7 +85,8 @@ import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJso
 public class ExportandImportCheck extends BaseTest {
 	private static int addedStops = 0;
 	// For this variable we have
-	// {stops collections, home collections, work collections, new collections}
+	private final static String[] Name = { "stops collections", "home collections", "work collections",
+			"new collections" };
 	private static int[] addedcollections = { 0, 0, 0, 0 };
 
 	/**
@@ -234,6 +237,7 @@ public class ExportandImportCheck extends BaseTest {
 			super.generateExtentTest(testName, false, e.getMessage(), page.screenshot());
 			error = true;
 			page.press("body", "Escape");
+			Thread.sleep(2000);
 
 		}
 
@@ -483,12 +487,19 @@ public class ExportandImportCheck extends BaseTest {
 		// Locate the collectionsLists
 		Locator collectionLists = page.locator("//html/body/div[3]/div[3]/div/div/div[2]");
 		Locator dataStores = collectionLists.locator("span:has-text('Number of ETAs:')");
+
+		List<String> errors = new ArrayList<>(); // To collect error messages
 		for (int i = 0; i < dataStores.count(); i++) {
 			String[] parts = dataStores.nth(i).innerText().split(": ");
 			if (!parts[1].equals(String.valueOf(addedcollections[i]))) {
-				throw new Exception("The import data is incorrect as the imported number should be " + addedcollections
-						+ " but now is " + parts[1]);
+				errors.add("The import data in " + Name[i] + " is incorrect as the imported number should be "
+						+ addedcollections[i] + " but now is " + parts[1]);
 			}
+		}
+
+		// After the loop, check if there were any errors
+		if (!errors.isEmpty()) {
+			throw new Exception(String.join("<br><br>", errors)); // Throw an exception with all error messages
 		}
 
 		page.press("body", "Escape");
@@ -788,7 +799,7 @@ public class ExportandImportCheck extends BaseTest {
 
 				}
 
-				if (i == 3) {
+				if (i == 2) {
 					break;
 				}
 			} catch (TimeoutError e) {
@@ -842,25 +853,52 @@ public class ExportandImportCheck extends BaseTest {
 	 */
 	private static void storeItemProcess() throws Exception {
 		Thread.sleep(1000);
+		List<String> errors = new ArrayList<>(); // To collect error messages
+
 		// Store ETAs (Star)
-		storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas", 0);
+		try {
+			storeItemInJson(page.locator("(//button[@role='tab'])[2]"), "Saved Etas", 0);
+		} catch (Exception e) {
+			errors.add("Failed to store Saved Etas: " + e.getMessage());
+		}
 		Thread.sleep(1000);
 
 		// Store Home Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home", 1);
+		try {
+			storeItemInJson(page.locator("(//button[@role='tab'])[4]"), "Collections Home", 1);
+		} catch (Exception e) {
+			errors.add("Failed to store Collections Home: " + e.getMessage());
+		}
 		Thread.sleep(1000);
 
 		// Store Work Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work", 2);
+		try {
+			storeItemInJson(page.locator("(//button[@role='tab'])[5]"), "Collections Work", 2);
+		} catch (Exception e) {
+			errors.add("Failed to store Collections Work: " + e.getMessage());
+		}
 		Thread.sleep(1000);
 
 		// Store New Collections
-		storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New", 3);
+		try {
+			storeItemInJson(page.locator("(//button[@role='tab'])[6]"), "Collections New", 3);
+		} catch (Exception e) {
+			errors.add("Failed to store Collections New: " + e.getMessage());
+		}
 		Thread.sleep(1000);
 
 		// Save Stops
-		saveStopsInJson();
+		try {
+			saveStopsInJson();
+		} catch (Exception e) {
+			errors.add("Failed to save stops: " + e.getMessage());
+		}
 		Thread.sleep(1000);
+
+		// After attempting to store all items, check for errors
+		if (!errors.isEmpty()) {
+			throw new Exception(String.join("<br><br>", errors)); // Throw an exception with all error messages
+		}
 	}
 
 	/**
@@ -886,8 +924,8 @@ public class ExportandImportCheck extends BaseTest {
 
 		Locator storedETAs = locator.locator("(//ul[@class='MuiList-root hkbus-1abambu']//li)");
 
-		System.out
-				.println("item found:" + storedETAs.count() + " and item should be stored: " + addedcollections[index]);
+		System.out.println(
+				"item found: " + storedETAs.count() + " and item should be stored: " + addedcollections[index]);
 
 		for (int i = 0; i < storedETAs.count(); i++) {
 			String route = storedETAs.nth(i).locator("h2 > span").nth(0).innerText().trim() + " ";
@@ -951,7 +989,7 @@ public class ExportandImportCheck extends BaseTest {
 			// Check if the collected UI data exists in the JSON data
 			if (jsonSet.contains(getData)) {
 				jsonSet.remove(getData); // Optional: Remove if you want to check for uniqueness
-				System.out.println(jsonSet.toString());
+				// System.out.println(jsonSet.toString());
 			}
 
 		}
@@ -988,7 +1026,6 @@ public class ExportandImportCheck extends BaseTest {
 		} else if (stopsNamesButtons.count() > addedStops) {
 			throw new Exception("There are error on the show on stops");
 		}
-
 	}
 
 	/**
