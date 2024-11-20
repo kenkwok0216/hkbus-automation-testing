@@ -14,6 +14,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -292,6 +293,57 @@ public class BaseTest {
 		} catch (WebDriverException e) {
 			System.err.println("Failed to capture screenshot: " + e.getMessage());
 			return new byte[0]; // Return an empty byte array if screenshot fails
+		}
+	}
+
+	/**
+	 * This method will capture and save the screenshot to default directory
+	 */
+	protected void captureAndSaveScreenshot() {
+		String dir;
+
+		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+			// Windows path
+			dir = "\\screenshots\\selenium";
+		} else {
+			// Other OS path
+			dir = "/screenshots/selenium";
+		}
+
+        File directoryFile = new File(System.getProperty("user.dir") + dir);
+		// Create directory if not exist
+        if (!directoryFile.exists()) {
+            boolean success = directoryFile.mkdirs();
+            if (!success) {
+                System.out.println("Failed to create directory: " + dir);
+            }
+        }
+
+		captureAndSaveScreenshot(dir);
+	}
+
+	/**
+	 * This method will capture and save the screenshot to the given directory
+	 * 
+	 * @param dir The directory to save screenshot, please make sure to manual create the directory before using it
+	 */
+	protected void captureAndSaveScreenshot(String dir) {
+		// Generate a timestamp for the screenshot file name
+		String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+		String dirPath = System.getProperty("user.dir") + dir;
+
+		TakesScreenshot ts = (TakesScreenshot) driver;
+		File srcFile = ts.getScreenshotAs(OutputType.FILE);
+
+        // Specify the destination file path
+        String fileName = "screenshot_" + timestamp + ".png";
+        File destFile = new File(dirPath, fileName);
+
+        // Copy the screenshot file to the destination
+        try {
+			FileHandler.copy(srcFile, destFile);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
