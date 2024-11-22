@@ -16,13 +16,12 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 	@BeforeEach
 	public void start() {
 		// super.configure("Chrome").navigate("https://www.google.com");
-		super.configure("firefox").navigate("https://hkbus.app/en/");
-
+		super.configure("firefox", true).navigate("https://hkbus.app/en/");
+		//super.configure("firefox",true);
 	}
 
-	// No need to record video
 	@Test
-	@Disabled
+	@Disabled	
 	public void fontSizeInitialTest() throws InterruptedException, IOException {
 
 		// Start getting initial Value
@@ -30,12 +29,13 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		Boolean error = false;
 
 		// nevigate to setting page
+		Thread.sleep(3000);
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 
 		// Locate the class element of the slider and check whether it is 14
 		Locator initialValueLabel = page
@@ -55,7 +55,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 
 			newpage.navigate("https://hkbus.app/en/");
 
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 
 			// nevigate to setting page
 			newpage.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
@@ -80,7 +80,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 
 				System.out.println("Value has changed: " + value);
 				error = true;
-				super.generateExtentTest("Initial Value unchange", false, "The intial value changed in iteration: " + i,
+				super.generateExtentTest("Initial Value change", false, "The intial value changed in iteration: " + i,
 						page.screenshot());
 				break;
 			}
@@ -100,19 +100,20 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 	public void fontSizeChangeTest() throws InterruptedException, IOException {
 		// Part 1 change font size to 10(smallest size)
 		// nevigate to setting page
+		Thread.sleep(3000);
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
 		// Thread.sleep(2000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(2000);
+		Thread.sleep(2000);
 
 		// Locate the class element of the slider and check whether it is 14
 		Locator valueLabel = page.locator("(//span[contains(@class,'MuiSlider-root MuiSlider-colorPrimary')])[2]");
 
 		// nevigate to slider value = 18
 		valueLabel.click();
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		// nevigate to value =10
 		valueLabel.press("ArrowLeft");
 		Thread.sleep(1000);
@@ -162,14 +163,14 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(2000);
+		 Thread.sleep(2000);
 
 		// Locate the class element of the slider and check whether it is 14
 		Locator valueLabel3 = page.locator("(//span[contains(@class,'MuiSlider-root MuiSlider-colorPrimary')])[2]");
 
 		// nevigate to slider value = 18
 		valueLabel3.click();
-		// Thread.sleep(5000);
+		Thread.sleep(1000);
 		// nevigate to value =26
 		valueLabel3.press("ArrowRight");
 		Thread.sleep(1000);
@@ -179,7 +180,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		Thread.sleep(1000);
 		valueLabel3.press("ArrowRight");
 		// valueLabel2.press("ArrowLeft");
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		// get font size(only apply in setting page)
 		font = page.locator("//html/body/div[3]/div[3]/div/ul/li/div[2]/p[1]");
 		fontSizeValue = font.evaluate("el => getComputedStyle(el).fontSize").toString();
@@ -216,28 +217,30 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		Boolean error = false;
 
 		// nevigate to setting page
+		Thread.sleep(3000);
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
 		// Thread.sleep(2000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(2000);
 
 		// find the order = 123456789c0b
 		Locator settingKeyboardLayoutButton = page
 				.locator("//li[contains(@class,'MuiListItem-root MuiListItem-gutters')]/following-sibling::div[1]");
 		String layoutOrder = settingKeyboardLayoutButton.locator("p").innerText().trim();
 		System.out.println("value : " + layoutOrder);
+		Thread.sleep(3000);
 
 		// check buttonboard
 		// leave setting page
 		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 
 		// click and display Search page
-		page.waitForTimeout(2000);
+		//page.waitForTimeout(2000);
 		page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 
 		// check if buttonboard display according to the order
 		Locator buttonboard = page.locator("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]");
@@ -260,31 +263,31 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		// part 2.1 change the order
 		// nevigate to setting page
 		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
-		// Thread.sleep(2000);
+		Thread.sleep(1000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(1000);
 
 		// click and change the layout order
 		settingKeyboardLayoutButton.click();
-		// Thread.sleep(5000);
+		//Thread.sleep(2000);
 
 		// check if value = 789456123c0b
 		String layoutOrder2 = settingKeyboardLayoutButton.locator("p").innerText().trim();
 		System.out.println("value : " + layoutOrder2);
-		// Thread.sleep(5000);
+		Thread.sleep(2000);
 
 		// part 2.2 change the order
 		// check buttonboard
 		// leave setting page
 		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 
 		// click and display Search page
-		page.waitForTimeout(2000);
+		//page.waitForTimeout(2000);
 		page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 
 		// check if buttonboard display according to the order
 		Locator buttonboard2 = page.locator("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]");
@@ -324,35 +327,35 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		//
 		// // nevigate to web home page of hkbus
 		// page.navigate("https://hkbus.app/en/");
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 
 		// Check if the history button is On
 		// nevigate to setting page
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
-		// Thread.sleep(2000);
+		Thread.sleep(1000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(1000);
 
 		// Scroll down the page
 		page.mouse().wheel(0, 300);
 		Locator history = page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
 		history.scrollIntoViewIfNeeded();
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 
 		// chech if the value is On
 		Locator historyOn = history.locator("p");
 		System.out.println("Search historty value: " + historyOn.nth(0).innerText().trim());
-		// Thread.sleep(5000);
+		Thread.sleep(2000);
 
 		// leave setting page
 		page.locator("(//button[contains(@class,'MuiButtonBase-root MuiIconButton-root')])[2]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(1000);
 
 		// click and display Search page
 		page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 
 		// // check whether recent button exist
 		// Locator recent =
@@ -396,25 +399,26 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		// finish part 1
 		// nevigate to setting page
 		page.locator("//a[contains(@class,'MuiButtonBase-root MuiIconButton-root')]").click();
-		// Thread.sleep(2000);
+		Thread.sleep(1000);
 
 		// nevigate to perosnal setting
 		page.locator("//*[@id=\"root\"]/div/div[2]/div/ul/div[6]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(1000);
 
 		// Scroll down the page
 		page.mouse().wheel(0, 300);
 		// Locator history =page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
 		history.scrollIntoViewIfNeeded();
+		Thread.sleep(2000);
 
 		// Part 2
 		// click and Off the history
 		Locator history2 = page.locator("//html/body/div[3]/div[3]/div/ul/div[11]");
-		// Thread.sleep(5000);
+		//Thread.sleep(4000);
 		history2.scrollIntoViewIfNeeded();
 		// Thread.sleep(5000);
 		history2.click();
-		// Thread.sleep(5000);
+		Thread.sleep(4000);
 
 		// chech if the value is Off
 		Locator historyOff = history2.locator("p");
@@ -427,7 +431,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 
 		// click and display Search page
 		page.locator("(//a[contains(@class,'MuiButtonBase-root MuiBottomNavigationAction-root')])[3]").click();
-		// Thread.sleep(5000);
+		Thread.sleep(4000);
 
 		Locator header2 = page.locator("//*[@id=\"root\"]/div/div[2]/div[1]/div[1]/div/div/div");
 		Locator button2 = header2.locator("button");

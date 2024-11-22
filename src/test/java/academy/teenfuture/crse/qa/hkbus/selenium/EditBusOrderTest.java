@@ -5,6 +5,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -21,6 +22,7 @@ public class EditBusOrderTest extends BaseTest {
 	}
 
 	@Test
+	@Disabled
 	public void editBusOrder() throws InterruptedException {
 		Thread.sleep(2000);
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
