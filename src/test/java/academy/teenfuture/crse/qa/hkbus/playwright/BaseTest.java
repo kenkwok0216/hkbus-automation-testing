@@ -82,7 +82,6 @@ import com.microsoft.playwright.Playwright;
  * </pre>
  * </p>
  * 
- * @author Ken Kwok
  */
 public class BaseTest {
 
