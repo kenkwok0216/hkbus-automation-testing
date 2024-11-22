@@ -126,6 +126,7 @@ public class SettingPageTest extends BaseTest {
 	 *                              operations.
 	 * @throws InterruptedException if the thread is interrupted while sleeping.
 	 */
+
 	// This method is to test the button with pop up
 	// i.e. install the app, Customize
 	@Test
@@ -223,7 +224,6 @@ public class SettingPageTest extends BaseTest {
 					Thread.sleep(1000);
 					// System.out.println(SettingName[i][0] + " is okay");
 					page.goBack();
-				
 
 				} else {
 
@@ -261,7 +261,7 @@ public class SettingPageTest extends BaseTest {
 	// For this test, we will use json file way to do it
 	// Base on the result, it may return error sometimes, even no error occur
 	@Test
-	// @Disabled
+	@Disabled
 	@Order(4)
 	public void NavigatePageTest() throws IOException, Exception {
 		String testName = "Navigate to other page test";

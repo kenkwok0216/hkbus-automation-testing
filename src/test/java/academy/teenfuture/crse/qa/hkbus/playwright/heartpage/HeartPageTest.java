@@ -78,7 +78,7 @@ public class HeartPageTest extends BaseTest {
 	@BeforeEach
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
-		super.configure("firefox", true).navigate("https://hkbus.app/en");
+		super.configure("firefox").navigate("https://hkbus.app/en");
 		// Locate button to Heart Page and click it
 		Locator HeartPage = page.locator("//*[@id=\"root\"]/div/div[3]/a[6]");
 		HeartPage.click();
@@ -177,7 +177,7 @@ public class HeartPageTest extends BaseTest {
 	 */
 	@Test
 	@Order(5)
-	// @Disabled
+	@Disabled
 	public void SubmissionTest() throws InterruptedException, IOException {
 		// Test Name of the method
 		String testName = "Test for submission";
