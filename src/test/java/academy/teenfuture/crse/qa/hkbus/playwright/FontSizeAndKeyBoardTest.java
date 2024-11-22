@@ -11,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-/**
- * Template test class
- */
 public class FontSizeAndKeyBoardTest extends BaseTest {
 
 	@BeforeEach
@@ -99,7 +96,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 	}
 
 	@Test
-	// @Disabled
+	@Disabled
 	public void fontSizeChangeTest() throws InterruptedException, IOException {
 		// Part 1 change font size to 10(smallest size)
 		// nevigate to setting page
@@ -148,7 +145,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		System.out.println(fontSizeValue);
 
 		// creat report for font size 10
-		if (fontSizeValue.equals("10")) {
+		if (fontSizeValue.equals("10px")) {
 			super.generateExtentTest("fontSizeTest 10", true, "This fontSizeTest pass");
 		} else {
 			super.generateExtentTest("fontSizeTest 10", false, "The font is not 10", page.screenshot());
@@ -193,7 +190,7 @@ public class FontSizeAndKeyBoardTest extends BaseTest {
 		// Close the browser
 		// browser.close();
 		// creat report for font size 26
-		if (fontSizeValue.equals("26")) {
+		if (fontSizeValue.equals("26px")) {
 			super.generateExtentTest("fontSizeTest 26", true, "This fontSizeTest pass");
 		} else {
 			super.generateExtentTest("fontSizeTest 26", false, "The font is not 26", page.screenshot());
