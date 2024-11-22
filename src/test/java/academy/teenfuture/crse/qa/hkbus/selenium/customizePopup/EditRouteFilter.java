@@ -15,9 +15,9 @@ import academy.teenfuture.crse.qa.hkbus.selenium.BaseTest;
 import java.io.IOException;
 import java.time.Duration;
 
-//Bus sorting Order
+//Route Filtering
 
-public class EditBusOrderTest extends BaseTest {
+public class EditRouteFilter extends BaseTest {
 
     @BeforeEach
     public void start() throws InterruptedException {
@@ -44,10 +44,10 @@ public class EditBusOrderTest extends BaseTest {
         option.click();
         Thread.sleep(1000);
 
-        // click bus sorting
-        WebElement busSortBtn = wait.until(
+        // click busOrder
+        WebElement busOrderBtn = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//html/body/div[3]/div[3]/div/ul/div[3]")));
-        busSortBtn.click();
+        busOrderBtn.click();
         Thread.sleep(1000);
 
         // close the popup
@@ -56,7 +56,6 @@ public class EditBusOrderTest extends BaseTest {
         closeBtn.click();
         Thread.sleep(1000);
 
-        // nav to home page
         driver.get("https://hkbus.app/zh/board");
         Thread.sleep(3000);
     }

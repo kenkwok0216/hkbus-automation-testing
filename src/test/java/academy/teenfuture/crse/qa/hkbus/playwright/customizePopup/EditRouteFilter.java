@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Disabled;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
 
-//Bus sorting Order
+//Route Filtering
 
-public class EditBusOrderTest extends BaseTest {
+public class EditRouteFilter extends BaseTest {
 
     @BeforeEach
     public void start() throws InterruptedException, IOException {
@@ -23,7 +23,7 @@ public class EditBusOrderTest extends BaseTest {
 
     // @Disabled
     @Test
-    public void editBusOrderTest() throws InterruptedException {
+    public void editRouteFilter() throws InterruptedException {
         // nev to search page
         page.locator("//html/body/div[2]/div/div[1]/div[3]/a").click();
         Thread.sleep(2000);
@@ -40,8 +40,8 @@ public class EditBusOrderTest extends BaseTest {
         page.press("body", "Escape");
         Thread.sleep(2000);
 
-        // nav to home page
-        page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
+        // nav to search page
+        page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
         Thread.sleep(2000);
 
     }
