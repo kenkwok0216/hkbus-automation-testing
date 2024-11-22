@@ -66,7 +66,7 @@ public class AddBusRouteTest extends BaseTest {
 		final int STARRED_HOME_TAB_INDEX = 2;
 
 		// Select the route
-		int repeat = 20;
+		int repeat = 2;
 		for (int i = 0; i < repeat; i++) {
 			try {
 				// TODO For debugging
