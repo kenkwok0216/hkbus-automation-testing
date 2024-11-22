@@ -21,7 +21,7 @@ public class EditBusOrderTest extends BaseTest {
 
     };
 
-    // @Disabled
+    @Disabled
     @Test
     public void editBusOrderTest() throws InterruptedException {
         // nev to search page

@@ -16,7 +16,7 @@ public class EditRouteFilter extends BaseTest {
 
     @BeforeEach
     public void start() throws InterruptedException, IOException {
-        super.configure("Chrome").navigate("https://hkbus.app/en/");
+        super.configure("Chrome").navigate("https://hkbus.app/en");
         Thread.sleep(3000);
 
     };
@@ -41,7 +41,7 @@ public class EditRouteFilter extends BaseTest {
         Thread.sleep(2000);
 
         // nav to search page
-        page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
+        page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
         Thread.sleep(2000);
 
     }

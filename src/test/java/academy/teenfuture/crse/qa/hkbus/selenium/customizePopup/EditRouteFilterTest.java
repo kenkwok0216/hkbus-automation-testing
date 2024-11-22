@@ -15,19 +15,19 @@ import academy.teenfuture.crse.qa.hkbus.selenium.BaseTest;
 import java.io.IOException;
 import java.time.Duration;
 
-//Route Filtering
+//Bus sorting Order
 
-public class EditRouteFilter extends BaseTest {
+public class EditRouteFilterTest extends BaseTest {
 
     @BeforeEach
     public void start() throws InterruptedException {
-        super.configureBrowser("Chrome").get("https://hkbus.app/zh/board");
+        super.configureBrowser("Chrome").get("https://hkbus.app/en");
         Thread.sleep(2000);
     }
 
-    @Disabled
+    // @Disabled
     @Test
-    public void editBusOrder() throws InterruptedException, IOException {
+    public void editRouteFilter() throws InterruptedException, IOException {
 
         Thread.sleep(2000);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -44,19 +44,20 @@ public class EditRouteFilter extends BaseTest {
         option.click();
         Thread.sleep(1000);
 
-        // click busOrder
-        WebElement busOrderBtn = wait.until(
-                ExpectedConditions.elementToBeClickable(By.xpath("//html/body/div[3]/div[3]/div/ul/div[3]")));
-        busOrderBtn.click();
+        // click bus Route Filter
+        WebElement routeFilterBtn = wait.until(
+            ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div[3]/div/ul/div[2]")));
+        routeFilterBtn.click();
         Thread.sleep(1000);
 
         // close the popup
         WebElement closeBtn = wait
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\":r1:\"]/button")));
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\":r2:\"]/button")));
         closeBtn.click();
         Thread.sleep(1000);
 
-        driver.get("https://hkbus.app/zh/board");
+        // nav to search page
+        driver.get("https://hkbus.app/zh");
         Thread.sleep(3000);
     }
 

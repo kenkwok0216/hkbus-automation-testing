@@ -21,7 +21,7 @@ public class EditBusOrderTest extends BaseTest {
 
     @BeforeEach
     public void start() throws InterruptedException {
-        super.configureBrowser("Chrome").get("https://hkbus.app/zh/board");
+        super.configureBrowser("Chrome").get("https://hkbus.app/en/board");
         Thread.sleep(2000);
     }
 
@@ -57,7 +57,7 @@ public class EditBusOrderTest extends BaseTest {
         Thread.sleep(1000);
 
         // nav to home page
-        driver.get("https://hkbus.app/zh/board");
+        driver.get("https://hkbus.app/en/board");
         Thread.sleep(3000);
     }
 

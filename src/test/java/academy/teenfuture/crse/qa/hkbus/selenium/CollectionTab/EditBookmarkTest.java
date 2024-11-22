@@ -21,14 +21,14 @@ import java.time.Duration;
 //Add route into collections
 public class EditBookmarkTest extends BaseTest {
 
-    @BeforeEach
-    public void start() {
+        @BeforeEach
+        public void start() {
         super.configureBrowser("Chrome").get("https://hkbus.app/en/board");
-    };
+        };
 
-    @Disabled
-    @Test
-    public void editBookmark() throws InterruptedException {
+        @Disabled
+        @Test
+        public void editBookmark() throws InterruptedException {
         Thread.sleep(3000);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
