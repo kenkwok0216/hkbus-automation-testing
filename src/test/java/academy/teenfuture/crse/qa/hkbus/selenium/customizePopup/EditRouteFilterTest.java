@@ -29,6 +29,8 @@ public class EditRouteFilterTest extends BaseTest {
     @Test
     public void editRouteFilter() throws InterruptedException, IOException {
 
+        String initialValue;
+
         Thread.sleep(2000);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -46,9 +48,15 @@ public class EditRouteFilterTest extends BaseTest {
 
         // click bus Route Filter
         WebElement routeFilterBtn = wait.until(
-            ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div[3]/div/ul/div[2]")));
+                ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[3]/div[3]/div/ul/div[2]")));
         routeFilterBtn.click();
         Thread.sleep(1000);
+
+        // check the option turn on
+        WebElement initialValueLabel = driver
+                .findElement(By.xpath("//html/body/div[3]/div[3]/div/ul/div[2]/div[2]/p"));
+        initialValue = initialValueLabel.getText();
+        printText(initialValue);
 
         // close the popup
         WebElement closeBtn = wait
@@ -57,8 +65,12 @@ public class EditRouteFilterTest extends BaseTest {
         Thread.sleep(1000);
 
         // nav to search page
-        driver.get("https://hkbus.app/zh");
+        driver.get("https://hkbus.app/en");
         Thread.sleep(3000);
+    }
+
+    public void printText(String text) {
+        System.out.println(text);
     }
 
     @AfterEach

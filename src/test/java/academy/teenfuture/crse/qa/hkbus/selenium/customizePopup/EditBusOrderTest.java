@@ -29,6 +29,8 @@ public class EditBusOrderTest extends BaseTest {
     @Test
     public void editBusOrder() throws InterruptedException, IOException {
 
+        String initialValue;
+
         Thread.sleep(2000);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -42,7 +44,9 @@ public class EditBusOrderTest extends BaseTest {
         WebElement option = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//html/body/div[2]/div/div[2]/div/ul/div[6]")));
         option.click();
-        Thread.sleep(1000);
+        Thread.sleep(1000);       
+        
+
 
         // click bus sorting
         WebElement busSortBtn = wait.until(

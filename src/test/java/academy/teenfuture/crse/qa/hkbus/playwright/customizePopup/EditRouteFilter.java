@@ -36,6 +36,13 @@ public class EditRouteFilter extends BaseTest {
         page.locator("//html/body/div[3]/div[3]/div/ul/div[3]").click();
         Thread.sleep(2000);
 
+         // //check the option is ONLY operating route
+        // Locator initialValueLabel = page
+        // .locator("(//span[contains(@class,'MuiSlider-root MuiSlider-colorPrimary')])[2]");
+
+        // initialValue = initialValueLabel.textContent();
+
+
         // close the popup
         page.press("body", "Escape");
         Thread.sleep(2000);
