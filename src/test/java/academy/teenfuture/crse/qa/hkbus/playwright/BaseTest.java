@@ -149,7 +149,6 @@ public class BaseTest {
 			Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
 			browserContext = browser.newContext(new Browser.NewContextOptions().setViewportSize(width, height)
 					.setRecordVideoDir(Paths.get("video/")).setRecordVideoSize(width, height));
-			browserContext.setDefaultTimeout(3000);
 			// browserContext.grantPermissions(permissions);
 			page = browserContext.newPage();
 
@@ -169,7 +168,6 @@ public class BaseTest {
 
 			Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(false));
 			browserContext = browser.newContext();
-			browserContext.setDefaultTimeout(3000);
 			// browserContext.grantPermissions(permissions);
 			page = browserContext.newPage();
 
