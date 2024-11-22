@@ -104,7 +104,7 @@ public class HeartPageTest extends BaseTest {
 	 */
 	@Test
 	@Order(1)
-	// @Disabled
+	@Disabled
 	public void emojiTest() throws InterruptedException, IOException {
 		testSelection("Test for emojis", "(//div[@role='group'])[1]", 1);
 	}

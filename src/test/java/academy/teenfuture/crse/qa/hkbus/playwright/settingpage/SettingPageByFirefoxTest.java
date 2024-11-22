@@ -17,7 +17,7 @@ public class SettingPageByFirefoxTest extends SettingPageTest {
 	public void start() throws InterruptedException {
 		// super.configure("Chrome").navigate("https://www.google.com");
 
-		super.configure("Firefox").navigate("https://hkbus.app/en");
+		super.configure("Firefox", true).navigate("https://hkbus.app/en");
 		Thread.sleep(3000);
 		// Locate button to Heart Page and click it
 		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");

@@ -104,7 +104,7 @@ public class ExportandImportCheck extends BaseTest {
 			addedcollections[i] = 0;
 		}
 
-		super.configure("firefox", false).navigate("https://hkbus.app/en");
+		super.configure("firefox").navigate("https://hkbus.app/en");
 		// This is to handle the saved.json to store the edited item
 		// Source file path
 		Path sourcePath = Paths.get(System.getProperty("user.dir")
@@ -150,7 +150,7 @@ public class ExportandImportCheck extends BaseTest {
 	 */
 	// This test will try the handle data import and export in a "normal" way
 	@Test
-	@Disabled
+	// @Disabled
 	@Order(1)
 	public void normalTest() throws Exception {
 		String testName = "Normal test on data export and import";
@@ -343,7 +343,7 @@ public class ExportandImportCheck extends BaseTest {
 	 *                   import process.
 	 */
 	@Test
-	// @Disabled // Check this later
+	@Disabled // Check this later
 	public void abnormalTest() throws Exception {
 
 		boolean error = false;

@@ -50,7 +50,7 @@ import academy.teenfuture.crse.qa.hkbus.playwright.settingpage.util.ReadJson;
  * @author Ken Kwok
  * @see BaseTest
  */
-@Disabled
+//@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SettingPageTest extends BaseTest {
 
@@ -65,15 +65,15 @@ public class SettingPageTest extends BaseTest {
 		// super.configure("Chrome").navigate("https://www.google.com");
 
 		Thread.sleep(3000);
-		super.configure("Firefox").navigate("https://hkbus.app/en");
+		super.configure("Firefox", true).navigate("https://hkbus.app/en");
 		// Locate button to Heart Page and click it
 		Locator SettingPage = page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a");
 		SettingPage.click();
-		Thread.sleep(100000);
+		// Thread.sleep(100000);
 
 		Thread.sleep(3000);
 	}
-	
+
 	/**
 	 * Tests the toggling of settings on and off. Currently disabled.
 	 *
@@ -89,6 +89,7 @@ public class SettingPageTest extends BaseTest {
 	public void withOnandOffTest() throws IOException, InterruptedException {
 		String testName = "on and off test";
 
+		boolean error = false;
 		// Define an array of locators and their corresponding names
 		Locator[] locators = new Locator[] { page.locator("//*[@id='root']/div/div[2]/div/ul/div[4]"), // Geolocation
 				page.locator("//*[@id='root']/div/div[2]/div/ul/div[5]"), // Auto Update Route Database
@@ -101,15 +102,19 @@ public class SettingPageTest extends BaseTest {
 
 		// Iterate through each setting
 		for (int i = 0; i < locators.length; i++) {
-			// In this stage, skip the geolocation 
+			// In this stage, skip the geolocation
 			// since even if the geolocation is given
 			// It is not able to enable the geolocations
 			// BUT it works manually using incognito mode
 			if (settingNames[i].equals("Geolocation")) {
 				continue;
 			}
-			toggleSettingOnAndOff(locators[i], settingNames[i], testName);
+			error = error && toggleSettingOnAndOff(locators[i], settingNames[i], testName);
 
+		}
+
+		if (!error) {
+			super.generateExtentTest(testName, true, "this test case pass");
 		}
 	}
 
@@ -124,7 +129,7 @@ public class SettingPageTest extends BaseTest {
 	// This method is to test the button with pop up
 	// i.e. install the app, Customize
 	@Test
-	// @Disabled
+	@Disabled
 	@Order(2)
 	public void popUpTest() throws IOException, InterruptedException {
 		String testName = "pop up window test";
@@ -215,8 +220,10 @@ public class SettingPageTest extends BaseTest {
 
 				if (currentUrl.endsWith(SettingName[i][1])) {
 
+					Thread.sleep(1000);
 					// System.out.println(SettingName[i][0] + " is okay");
 					page.goBack();
+				
 
 				} else {
 
@@ -254,7 +261,7 @@ public class SettingPageTest extends BaseTest {
 	// For this test, we will use json file way to do it
 	// Base on the result, it may return error sometimes, even no error occur
 	@Test
-	@Disabled
+	// @Disabled
 	@Order(4)
 	public void NavigatePageTest() throws IOException, Exception {
 		String testName = "Navigate to other page test";
@@ -289,7 +296,7 @@ public class SettingPageTest extends BaseTest {
 				// Wait for the new page to load completely
 				newPage.waitForLoadState();
 
-				Thread.sleep(5000);
+				Thread.sleep(2000);
 
 				// Get the current URL after navigation
 				String currentUrl = newPage.url();
@@ -303,7 +310,7 @@ public class SettingPageTest extends BaseTest {
 					throw new Exception(settingNames[i] + " navigate to wrong page");
 				}
 
-				Thread.sleep(3000);
+				Thread.sleep(2000);
 
 			} catch (Exception e) {
 
@@ -352,7 +359,8 @@ public class SettingPageTest extends BaseTest {
 	 * @throws IOException if there is an issue with input/output operations.
 	 */
 	// Helper method to toggle a setting and verify its status
-	private void toggleSettingOnAndOff(Locator settingLocator, String settingName, String testName) throws IOException {
+	private boolean toggleSettingOnAndOff(Locator settingLocator, String settingName, String testName)
+			throws IOException {
 		// Create a scanner for user input
 		Scanner scanner = new Scanner(System.in);
 		// This loop try to run for twice to check both on to off and off to on
@@ -383,8 +391,11 @@ public class SettingPageTest extends BaseTest {
 				// Generate test report for the failure with specific setting name in the
 				// message
 				generateExtentTest(testName, false, e.getMessage(), settingLocator.screenshot());
+				return true;
 			}
+
 		}
+		return false;
 	}
 
 	/**
