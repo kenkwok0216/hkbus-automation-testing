@@ -76,16 +76,16 @@ public class AddBusRouteTest extends BaseTest {
             } catch (ElementClickInterceptedException | NoSuchElementException e) {
                 e.printStackTrace();
                 // captureAndSaveScreenshot();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 // Try to click blank area if ElementClickInterceptedException appears
                 RoutePage routePage = new RoutePage(driver);
                 routePage.clickBlankArea();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 routePage.clickBlankArea();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
-                captureAndSaveScreenshot();
+                // captureAndSaveScreenshot();
             }
         }
 
@@ -148,12 +148,12 @@ public class AddBusRouteTest extends BaseTest {
             } catch (ElementClickInterceptedException | NoSuchElementException e) {
                 e.printStackTrace();
                 // captureAndSaveScreenshot();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 // Try to click blank area if ElementClickInterceptedException appears
                 routePage.clickBlankArea();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 routePage.clickBlankArea();
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             }
         }
     }
