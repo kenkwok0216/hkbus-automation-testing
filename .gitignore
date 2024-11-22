@@ -1,8 +1,5 @@
 HELP.md
 target/
-testresult/
-screenshots/
-video/
 ./settings
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
