@@ -1,5 +1,6 @@
 HELP.md
 target/
+bin/
 ./settings
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -36,4 +37,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-/bin/
+/.apt_generated_tests/
+
