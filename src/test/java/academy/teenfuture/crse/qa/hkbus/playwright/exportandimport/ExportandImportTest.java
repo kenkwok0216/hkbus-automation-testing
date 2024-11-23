@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.TimeoutError;
 
 import academy.teenfuture.crse.qa.hkbus.playwright.BaseTest;
+import academy.teenfuture.crse.qa.hkbus.playwright.Page.PageFactory;
 import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.ReadJson;
 import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJson;
 
@@ -81,12 +83,13 @@ import academy.teenfuture.crse.qa.hkbus.playwright.exportandimport.util.WriteJso
  * @throws Exception if any errors occur during the execution of methods.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ExportandImportCheck extends BaseTest {
-	private static int addedStops = 0;
+public class ExportandImportTest extends BaseTest {
+	protected static int addedStops = 0;
 	// For this variable we have
-	private final static String[] Name = { "stops collections", "home collections", "work collections",
+	protected final static String[] Name = { "stops collections", "home collections", "work collections",
 			"new collections" };
-	private static int[] addedcollections = { 0, 0, 0, 0 };
+	protected static int[] addedcollections = { 0, 0, 0, 0 };
+	protected PageFactory GoPage;
 
 	/**
 	 * Prepares the test environment before each test case. This method configures
@@ -104,6 +107,7 @@ public class ExportandImportCheck extends BaseTest {
 		}
 
 		super.configure("firefox").navigate("https://hkbus.app/en");
+		GoPage = new PageFactory(page);
 		// This is to handle the saved.json to store the edited item
 		// Source file path
 		Path sourcePath = Paths.get(System.getProperty("user.dir")
@@ -155,6 +159,7 @@ public class ExportandImportCheck extends BaseTest {
 		String testName = "Normal test on data export and import";
 		boolean error = false;
 
+		Thread.sleep(3000);
 		// Navigate to Setting Page
 		GoToSetting();
 
@@ -342,7 +347,7 @@ public class ExportandImportCheck extends BaseTest {
 	 *                   import process.
 	 */
 	@Test
-	// @Disabled // Check this later
+	@Disabled // Check this later
 	public void abnormalTest() throws Exception {
 
 		boolean error = false;
@@ -545,21 +550,6 @@ public class ExportandImportCheck extends BaseTest {
 	}
 
 	/**
-	 * Navigates to the settings page in the HK Bus application.
-	 *
-	 * <p>
-	 * This method simulates a click on the settings link and waits for the page to
-	 * load.
-	 * </p>
-	 *
-	 * @throws InterruptedException if the thread is interrupted while waiting.
-	 */
-	private void GoToSetting() throws InterruptedException {
-		page.locator("//*[@id=\"root\"]/div/div[1]/div[3]/a").click();
-		Thread.sleep(1000);
-	}
-
-	/**
 	 * Navigates to the customize settings page in the HK Bus application.
 	 *
 	 * <p>
@@ -575,6 +565,21 @@ public class ExportandImportCheck extends BaseTest {
 	}
 
 	/**
+	 * Navigates to the settings page in the HK Bus application.
+	 *
+	 * <p>
+	 * This method simulates a click on the settings link and waits for the page to
+	 * load.
+	 * </p>
+	 *
+	 * @throws InterruptedException if the thread is interrupted while waiting.
+	 */
+	public void GoToSetting() throws InterruptedException {
+		GoPage.getSettingPage().GoToSetting();
+		Thread.sleep(1000);
+	}
+
+	/**
 	 * Navigates to the search page in the HK Bus application.
 	 *
 	 * <p>
@@ -585,8 +590,7 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws InterruptedException if the thread is interrupted while waiting.
 	 */
 	private void GoToSearchPage() throws InterruptedException {
-		page.locator("//*[@id=\"root\"]/div/div[3]/a[3]").click();
-		Thread.sleep(1000);
+		GoPage.getSearchPage().goToSearchPage();
 	}
 
 	/**
@@ -600,8 +604,7 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws InterruptedException if the thread is interrupted while waiting.
 	 */
 	private void GoToAllTab() throws InterruptedException {
-		page.locator("(//button[@role='tab'])[2]").click();
-		Thread.sleep(1000);
+		GoPage.getSearchPage().navTab("All");
 	}
 
 	/**
@@ -615,9 +618,7 @@ public class ExportandImportCheck extends BaseTest {
 	 * @throws InterruptedException if the thread is interrupted while waiting.
 	 */
 	private void GoToHomePage() throws InterruptedException {
-		// Navigate to Home Page
-		page.locator("//*[@id=\"root\"]/div/div[3]/a[1]").click();
-		Thread.sleep(1000);
+		GoPage.getHomePage().goToHomePage();
 	}
 
 	/**

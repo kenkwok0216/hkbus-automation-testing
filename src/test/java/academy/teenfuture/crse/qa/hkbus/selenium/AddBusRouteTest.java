@@ -25,7 +25,7 @@ public class AddBusRouteTest extends BaseTest {
 	private static BusRouteDataReader busRouteReader;
 	private static List<BusRoute> busRouteList;
 
-	private NavBar navBar;
+	protected NavBar navBar;
 
 	@BeforeAll
 	public static void startAll() {
